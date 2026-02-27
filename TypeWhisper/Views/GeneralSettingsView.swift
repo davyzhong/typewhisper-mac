@@ -10,6 +10,8 @@ struct GeneralSettingsView: View {
         return Locale.preferredLanguages.first?.hasPrefix("de") == true ? "de" : "en"
     }()
     @State private var showRestartAlert = false
+    @State private var showMenuBarIconHiddenAlert = false
+    @AppStorage(UserDefaultsKeys.showMenuBarIcon) private var showMenuBarIcon = true
     @ObservedObject private var modelManager = ModelManagerViewModel.shared
     @ObservedObject private var settings = SettingsViewModel.shared
 
@@ -100,6 +102,23 @@ struct GeneralSettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            Section(String(localized: "Appearance")) {
+                Toggle(String(localized: "Show menu bar icon"), isOn: $showMenuBarIcon)
+                    .onChange(of: showMenuBarIcon) { _, newValue in
+                        if !newValue {
+                            let alertShown = UserDefaults.standard.bool(forKey: UserDefaultsKeys.menuBarIconHiddenAlertShown)
+                            if !alertShown {
+                                showMenuBarIconHiddenAlert = true
+                                UserDefaults.standard.set(true, forKey: UserDefaultsKeys.menuBarIconHiddenAlertShown)
+                            }
+                        }
+                    }
+
+                Text(String(localized: "When hidden, the app is accessible via the Dock icon."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             #if !APPSTORE
             Section(String(localized: "Updates")) {
                 HStack {
@@ -128,6 +147,11 @@ struct GeneralSettingsView: View {
             Button(String(localized: "Later"), role: .cancel) {}
         } message: {
             Text(String(localized: "The language change will take effect after restarting TypeWhisper."))
+        }
+        .alert(String(localized: "Menu bar icon hidden"), isPresented: $showMenuBarIconHiddenAlert) {
+            Button(String(localized: "OK"), role: .cancel) {}
+        } message: {
+            Text(String(localized: "You can access TypeWhisper settings via the Dock icon."))
         }
     }
 
