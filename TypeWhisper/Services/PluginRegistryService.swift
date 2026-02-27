@@ -105,11 +105,13 @@ final class PluginRegistryService: ObservableObject {
 
     // MARK: - Background Update Check
 
+    private static let didAutoInstallKey = "pluginRegistry.didAutoInstall"
+
     /// Check for plugin updates on app launch (at most once per 24h).
-    /// On first run (no plugins installed), auto-installs all available plugins.
+    /// On first run, auto-installs all available plugins.
     func checkForUpdatesInBackground() {
-        let isFirstRun = PluginManager.shared.loadedPlugins.isEmpty
-        if !isFirstRun {
+        let didAutoInstall = UserDefaults.standard.bool(forKey: Self.didAutoInstallKey)
+        if didAutoInstall {
             let lastCheck = UserDefaults.standard.double(forKey: Self.lastUpdateCheckKey)
             let hoursSinceLastCheck = (Date().timeIntervalSince1970 - lastCheck) / 3600
             guard hoursSinceLastCheck >= 24 || lastCheck == 0 else { return }
@@ -119,8 +121,9 @@ final class PluginRegistryService: ObservableObject {
             lastFetchDate = nil
             await fetchRegistry()
 
-            if isFirstRun {
+            if !didAutoInstall {
                 await autoInstallAllPlugins()
+                UserDefaults.standard.set(true, forKey: Self.didAutoInstallKey)
             }
 
             updateAvailableUpdatesCount()
