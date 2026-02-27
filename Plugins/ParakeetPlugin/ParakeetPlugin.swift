@@ -163,6 +163,9 @@ private struct ParakeetSettingsView: View {
     private let bundle = Bundle(for: ParakeetPlugin.self)
     @State private var modelState: ParakeetModelState = .notLoaded
     @State private var downloadProgress: Double = 0
+    @State private var isPolling = false
+
+    private let pollTimer = Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -189,9 +192,14 @@ private struct ParakeetSettingsView: View {
                 switch modelState {
                 case .notLoaded:
                     Button(String(localized: "Download & Load", bundle: bundle)) {
+                        modelState = .downloading
+                        downloadProgress = 0.05
+                        isPolling = true
                         Task {
                             await plugin.loadModel()
+                            isPolling = false
                             modelState = plugin.modelState
+                            downloadProgress = plugin.downloadProgress
                         }
                     }
                     .buttonStyle(.borderedProminent)
@@ -229,9 +237,13 @@ private struct ParakeetSettingsView: View {
                                 .lineLimit(1)
                         }
                         Button(String(localized: "Retry", bundle: bundle)) {
+                            modelState = .downloading
+                            isPolling = true
                             Task {
                                 await plugin.loadModel()
+                                isPolling = false
                                 modelState = plugin.modelState
+                                downloadProgress = plugin.downloadProgress
                             }
                         }
                         .buttonStyle(.bordered)
@@ -245,6 +257,16 @@ private struct ParakeetSettingsView: View {
         .onAppear {
             modelState = plugin.modelState
             downloadProgress = plugin.downloadProgress
+        }
+        .onReceive(pollTimer) { _ in
+            guard isPolling else { return }
+            downloadProgress = plugin.downloadProgress
+            let pluginState = plugin.modelState
+            if pluginState != .notLoaded {
+                modelState = pluginState
+            }
+            if case .ready = pluginState { isPolling = false }
+            else if case .error = pluginState { isPolling = false }
         }
     }
 }

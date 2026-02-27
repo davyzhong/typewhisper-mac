@@ -345,6 +345,9 @@ private struct SpeechAnalyzerSettingsView: View {
     @State private var modelState: SpeechModelState = .notLoaded
     @State private var loadedModelId: String?
     @State private var searchText = ""
+    @State private var isPolling = false
+
+    private let pollTimer = Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()
 
     private var filteredModels: [SpeechModelDef] {
         if searchText.isEmpty {
@@ -433,6 +436,16 @@ private struct SpeechAnalyzerSettingsView: View {
             }
             syncState()
         }
+        .onReceive(pollTimer) { _ in
+            guard isPolling else { return }
+            let pluginState = plugin.modelState
+            if pluginState != .notLoaded {
+                modelState = pluginState
+                loadedModelId = plugin.loadedModelId
+            }
+            if case .ready = pluginState { isPolling = false }
+            else if case .error = pluginState { isPolling = false }
+        }
     }
 
     private func syncState() {
@@ -455,8 +468,11 @@ private struct SpeechAnalyzerSettingsView: View {
                     .font(.caption)
             } else {
                 Button(String(localized: "Select", bundle: bundle)) {
+                    modelState = .downloading
+                    isPolling = true
                     Task {
                         await plugin.loadModel(modelDef)
+                        isPolling = false
                         syncState()
                     }
                 }

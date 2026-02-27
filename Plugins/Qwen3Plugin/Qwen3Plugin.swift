@@ -390,6 +390,9 @@ private struct Qwen3SettingsView: View {
     private let bundle = Bundle(for: Qwen3Plugin.self)
     @State private var modelState: Qwen3ModelState = .notLoaded
     @State private var selectedModelId: String = ""
+    @State private var isPolling = false
+
+    private let pollTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -431,9 +434,20 @@ private struct Qwen3SettingsView: View {
         .task {
             // Auto-restore previously loaded model
             if case .notLoaded = plugin.modelState {
+                isPolling = true
                 await plugin.restoreLoadedModel()
+                isPolling = false
                 modelState = plugin.modelState
             }
+        }
+        .onReceive(pollTimer) { _ in
+            guard isPolling else { return }
+            let pluginState = plugin.modelState
+            if pluginState != .notLoaded {
+                modelState = pluginState
+            }
+            if case .ready = pluginState { isPolling = false }
+            else if case .error = pluginState { isPolling = false }
         }
     }
 
@@ -469,8 +483,10 @@ private struct Qwen3SettingsView: View {
                 Button(String(localized: "Download & Load", bundle: bundle)) {
                     selectedModelId = modelDef.id
                     modelState = .loading
+                    isPolling = true
                     Task {
                         try? await plugin.loadModel(modelDef)
+                        isPolling = false
                         modelState = plugin.modelState
                     }
                 }
