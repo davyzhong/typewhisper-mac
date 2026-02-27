@@ -163,6 +163,9 @@ final class ServiceContainer: ObservableObject {
         // Validate LLM provider selection against loaded plugins
         promptProcessingService.validateSelectionAfterPluginLoad()
 
+        // Check for plugin updates in background
+        pluginRegistryService.checkForUpdatesInBackground()
+
         // Migrate stale cloudModelOverride in profiles
         for profile in profileService.profiles {
             guard let modelOverride = profile.cloudModelOverride,

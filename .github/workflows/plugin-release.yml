@@ -11,6 +11,9 @@ permissions:
 jobs:
   build:
     runs-on: macos-15
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
     steps:
       - name: Parse tag
         run: |

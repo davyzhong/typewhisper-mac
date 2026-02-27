@@ -362,8 +362,20 @@ private struct AvailablePluginRow: View {
                 .frame(width: 32)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(plugin.name)
-                    .font(.headline)
+                HStack(spacing: 6) {
+                    Text(plugin.name)
+                        .font(.headline)
+                    if plugin.requiresAPIKey == true {
+                        Text(String(localized: "API Key"))
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 1)
+                            .background(.orange.opacity(0.15))
+                            .foregroundStyle(.orange)
+                            .clipShape(Capsule())
+                    }
+                }
                 Text(plugin.description)
                     .font(.caption)
                     .foregroundStyle(.secondary)

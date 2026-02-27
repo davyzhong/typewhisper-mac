@@ -117,21 +117,15 @@
 		AA00000000000000000141 /* GeminiPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000141 /* GeminiPlugin.swift */; };
 		AA00000000000000000142 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000142 /* manifest.json */; };
 		AA00000000000000000143 /* TypeWhisperPluginSDK in Frameworks */ = {isa = PBXBuildFile; productRef = PP00000000000000000009 /* TypeWhisperPluginSDK */; };
-		AA00000000000000000144 /* WebhookPlugin.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = BB00000000000000000133 /* WebhookPlugin.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		AA00000000000000000145 /* GroqPlugin.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = BB00000000000000000134 /* GroqPlugin.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		AA00000000000000000146 /* OpenAIPlugin.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = BB00000000000000000135 /* OpenAIPlugin.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		AA00000000000000000147 /* GeminiPlugin.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = BB00000000000000000143 /* GeminiPlugin.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AA00000000000000000148 /* LinearPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000144 /* LinearPlugin.swift */; };
 		AA00000000000000000149 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000145 /* manifest.json */; };
 		AA00000000000000000150 /* TypeWhisperPluginSDK in Frameworks */ = {isa = PBXBuildFile; productRef = PP00000000000000000010 /* TypeWhisperPluginSDK */; };
-		AA00000000000000000151 /* LinearPlugin.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = BB00000000000000000146 /* LinearPlugin.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AA00000000000000000152 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000147 /* AppConstants.swift */; };
 		AA00000000000000000154 /* Qwen3Plugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000150 /* Qwen3Plugin.swift */; };
 		AA00000000000000000155 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000151 /* manifest.json */; };
 		AA00000000000000000156 /* TypeWhisperPluginSDK in Frameworks */ = {isa = PBXBuildFile; productRef = PP00000000000000000011 /* TypeWhisperPluginSDK */; };
 		AA00000000000000000157 /* MLXAudioSTT in Frameworks */ = {isa = PBXBuildFile; productRef = PP00000000000000000012 /* MLXAudioSTT */; };
 		AA00000000000000000158 /* MLXAudioCore in Frameworks */ = {isa = PBXBuildFile; productRef = PP00000000000000000013 /* MLXAudioCore */; };
-		AA00000000000000000159 /* Qwen3Plugin.bundle in Embed Plugins */ = {isa = PBXBuildFile; fileRef = BB00000000000000000149 /* Qwen3Plugin.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -346,16 +340,6 @@
 				AA00000000000000000134 /* TypeWhisperPluginSDK in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FF00000000000000000049 /* Embed Plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-			);
-			name = "Embed Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -773,7 +757,6 @@
 				FF00000000000000000003 /* Resources */,
 				FF00000000000000000004 /* CopyFiles */,
 				FF00000000000000000036 /* Embed Frameworks */,
-				FF00000000000000000049 /* Embed Plugins */,
 				FF00000000000000000007 /* Remove CLI for App Store */,
 			);
 			buildRules = (

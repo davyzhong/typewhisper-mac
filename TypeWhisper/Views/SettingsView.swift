@@ -8,10 +8,11 @@ enum SettingsTab: Hashable {
 struct SettingsView: View {
     @State private var selectedTab: SettingsTab = .home
     @ObservedObject private var fileTranscription = FileTranscriptionViewModel.shared
+    @ObservedObject private var registryService = PluginRegistryService.shared
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            SettingsMainTabs()
+            SettingsMainTabs(pluginUpdatesBadge: registryService.availableUpdatesCount)
         }
         .tabViewStyle(.sidebarAdaptable)
         .frame(minWidth: 700, idealWidth: 750, minHeight: 550, idealHeight: 600)
@@ -29,6 +30,7 @@ struct SettingsView: View {
 }
 
 private struct SettingsMainTabs: TabContent {
+    var pluginUpdatesBadge: Int
     var body: some TabContent<SettingsTab> {
         Tab(String(localized: "Home"), systemImage: "house", value: SettingsTab.home) {
             HomeSettingsView()
@@ -48,11 +50,12 @@ private struct SettingsMainTabs: TabContent {
         Tab(String(localized: "History"), systemImage: "clock.arrow.circlepath", value: SettingsTab.history) {
             HistoryView()
         }
-        SettingsExtraTabs()
+        SettingsExtraTabs(pluginUpdatesBadge: pluginUpdatesBadge)
     }
 }
 
 private struct SettingsExtraTabs: TabContent {
+    var pluginUpdatesBadge: Int
     var body: some TabContent<SettingsTab> {
         Tab(String(localized: "Dictionary"), systemImage: "book.closed", value: SettingsTab.dictionary) {
             DictionarySettingsView()
@@ -69,6 +72,7 @@ private struct SettingsExtraTabs: TabContent {
         Tab(String(localized: "Integrations"), systemImage: "puzzlepiece.extension", value: SettingsTab.integrations) {
             PluginSettingsView()
         }
+        .badge(self.pluginUpdatesBadge)
         Tab(String(localized: "Advanced"), systemImage: "gearshape.2", value: SettingsTab.advanced) {
             AdvancedSettingsView()
         }

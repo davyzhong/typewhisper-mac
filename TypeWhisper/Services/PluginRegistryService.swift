@@ -16,6 +16,7 @@ struct RegistryPlugin: Codable, Identifiable {
     let size: Int64
     let downloadURL: String
     let iconSystemName: String?
+    let requiresAPIKey: Bool?
 }
 
 struct PluginRegistryResponse: Codable {
@@ -39,10 +40,12 @@ final class PluginRegistryService: ObservableObject {
     @Published var registry: [RegistryPlugin] = []
     @Published var fetchState: FetchState = .idle
     @Published var installStates: [String: InstallState] = [:]
+    @Published var availableUpdatesCount: Int = 0
 
     private var lastFetchDate: Date?
     private let registryURL = URL(string: "https://typewhisper.github.io/typewhisper-mac/plugins.json")!
     private let cacheDuration: TimeInterval = 300 // 5 minutes
+    private static let lastUpdateCheckKey = "pluginRegistryLastUpdateCheck"
 
     enum FetchState: Equatable {
         case idle
@@ -98,6 +101,50 @@ final class PluginRegistryService: ObservableObject {
             fetchState = .error(error.localizedDescription)
             logger.error("Failed to fetch registry: \(error.localizedDescription)")
         }
+    }
+
+    // MARK: - Background Update Check
+
+    /// Check for plugin updates on app launch (at most once per 24h).
+    /// On first run (no plugins installed), auto-installs all available plugins.
+    func checkForUpdatesInBackground() {
+        let isFirstRun = PluginManager.shared.loadedPlugins.isEmpty
+        if !isFirstRun {
+            let lastCheck = UserDefaults.standard.double(forKey: Self.lastUpdateCheckKey)
+            let hoursSinceLastCheck = (Date().timeIntervalSince1970 - lastCheck) / 3600
+            guard hoursSinceLastCheck >= 24 || lastCheck == 0 else { return }
+        }
+
+        Task {
+            lastFetchDate = nil
+            await fetchRegistry()
+
+            if isFirstRun {
+                await autoInstallAllPlugins()
+            }
+
+            updateAvailableUpdatesCount()
+            UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.lastUpdateCheckKey)
+        }
+    }
+
+    /// Auto-install all available plugins (used on first run)
+    private func autoInstallAllPlugins() async {
+        let pluginsToInstall = registry.filter { !$0.downloadURL.isEmpty }
+        guard !pluginsToInstall.isEmpty else { return }
+
+        logger.info("First run: auto-installing \(pluginsToInstall.count) plugin(s)")
+        for plugin in pluginsToInstall {
+            await downloadAndInstall(plugin)
+        }
+    }
+
+    func updateAvailableUpdatesCount() {
+        let count = PluginManager.shared.loadedPlugins.count(where: { plugin in
+            if case .updateAvailable = installInfo(for: plugin.manifest.id) { return true }
+            return false
+        })
+        availableUpdatesCount = count
     }
 
     // MARK: - Install Info
@@ -188,6 +235,7 @@ final class PluginRegistryService: ObservableObject {
 
             installStates.removeValue(forKey: plugin.id)
             lastFetchDate = nil // invalidate cache so installInfo refreshes
+            updateAvailableUpdatesCount()
             logger.info("Installed plugin \(plugin.id) v\(plugin.version)")
         } catch {
             installStates[plugin.id] = .error(error.localizedDescription)
