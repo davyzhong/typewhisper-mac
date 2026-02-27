@@ -354,9 +354,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				AA00000000000000000145 /* GroqPlugin.bundle in Embed Plugins */,
-				AA00000000000000000146 /* OpenAIPlugin.bundle in Embed Plugins */,
-				AA00000000000000000147 /* GeminiPlugin.bundle in Embed Plugins */,
 			);
 			name = "Embed Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -783,9 +780,6 @@
 			);
 			dependencies = (
 				GG00000000000000000001 /* PBXTargetDependency */,
-				GG00000000000000000002 /* PBXTargetDependency */,
-				GG00000000000000000004 /* PBXTargetDependency */,
-				GG00000000000000000005 /* PBXTargetDependency */,
 			);
 			name = TypeWhisper;
 			packageProductDependencies = (
