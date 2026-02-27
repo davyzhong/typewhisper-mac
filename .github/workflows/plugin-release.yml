@@ -162,11 +162,14 @@ jobs:
           TAG="${GITHUB_REF_NAME}"
           DOWNLOAD_URL="https://github.com/TypeWhisper/typewhisper-mac/releases/download/${TAG}/${TARGET}.zip"
 
-          git fetch origin gh-pages
           git worktree add -B gh-pages /tmp/gh-pages origin/gh-pages
 
-          # Update the plugin entry in plugins.json using python
-          python3 << PYEOF
+          update_registry() {
+            cd /tmp/gh-pages
+            git fetch origin gh-pages
+            git reset --hard origin/gh-pages
+
+            python3 << PYEOF
           import json, sys
 
           with open("/tmp/gh-pages/plugins.json", "r") as f:
@@ -179,7 +182,6 @@ jobs:
 
           updated = False
           for plugin in registry["plugins"]:
-              # Match by plugin name in the id
               if plugin_name in plugin["id"]:
                   plugin["version"] = version
                   plugin["size"] = size
@@ -197,9 +199,19 @@ jobs:
               f.write("\n")
           PYEOF
 
-          cd /tmp/gh-pages
-          git add plugins.json
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --cached --quiet || git commit -m "Update ${TARGET} to v${PLUGIN_VERSION}"
-          git push origin gh-pages
+            git add plugins.json
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git diff --cached --quiet || git commit -m "Update ${TARGET} to v${PLUGIN_VERSION}"
+            git push origin gh-pages
+          }
+
+          # Retry up to 5 times to handle concurrent pushes
+          for i in 1 2 3 4 5; do
+            if update_registry; then
+              echo "Successfully updated plugins.json (attempt $i)"
+              break
+            fi
+            echo "Push failed (attempt $i), retrying in ${i}s..."
+            sleep "$i"
+          done

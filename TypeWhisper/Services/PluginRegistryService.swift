@@ -82,7 +82,9 @@ final class PluginRegistryService: ObservableObject {
         fetchState = .loading
 
         do {
-            let (data, _) = try await URLSession.shared.data(from: registryURL)
+            var request = URLRequest(url: registryURL)
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+            let (data, _) = try await URLSession.shared.data(for: request)
             let response = try JSONDecoder().decode(PluginRegistryResponse.self, from: data)
 
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
