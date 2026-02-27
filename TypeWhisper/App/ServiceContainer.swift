@@ -23,6 +23,7 @@ final class ServiceContainer: ObservableObject {
     let promptActionService: PromptActionService
     let promptProcessingService: PromptProcessingService
     let pluginManager: PluginManager
+    let pluginRegistryService: PluginRegistryService
 
     // HTTP API
     let httpServer: HTTPServer
@@ -59,6 +60,7 @@ final class ServiceContainer: ObservableObject {
         promptActionService = PromptActionService()
         promptProcessingService = PromptProcessingService()
         pluginManager = PluginManager()
+        pluginRegistryService = PluginRegistryService()
 
         // ViewModels (created before HTTP API so DictationViewModel is available)
         modelManagerViewModel = ModelManagerViewModel(modelManager: modelManagerService)
@@ -125,6 +127,7 @@ final class ServiceContainer: ObservableObject {
         // Plugin system
         EventBus.shared = EventBus()
         PluginManager.shared = pluginManager
+        PluginRegistryService.shared = pluginRegistryService
     }
 
     func initialize() async {

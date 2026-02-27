@@ -39,6 +39,7 @@
 		AA00000000000000000046 /* AdvancedSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000046 /* AdvancedSettingsView.swift */; };
 		AA00000000000000000050 /* SubtitleExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000050 /* SubtitleExporter.swift */; };
 		AA00000000000000000153 /* HistoryExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000148 /* HistoryExporter.swift */; };
+		AA00000000000000000154 /* PluginRegistryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000149 /* PluginRegistryService.swift */; };
 		AA00000000000000000051 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000051 /* GeneralSettingsView.swift */; };
 		AA00000000000000000052 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000052 /* Localizable.xcstrings */; };
 		AA00000000000000000060 /* TranscriptionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000000060 /* TranscriptionRecord.swift */; };
@@ -160,6 +161,7 @@
 		BB00000000000000000046 /* AdvancedSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsView.swift; sourceTree = "<group>"; };
 		BB00000000000000000050 /* SubtitleExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleExporter.swift; sourceTree = "<group>"; };
 		BB00000000000000000148 /* HistoryExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryExporter.swift; sourceTree = "<group>"; };
+		BB00000000000000000149 /* PluginRegistryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginRegistryService.swift; sourceTree = "<group>"; };
 		BB00000000000000000051 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		BB00000000000000000052 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BB00000000000000000060 /* TranscriptionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionRecord.swift; sourceTree = "<group>"; };
@@ -506,6 +508,7 @@
 				BB00000000000000000115 /* PromptProcessingService.swift */,
 				BB00000000000000000123 /* EventBus.swift */,
 				BB00000000000000000124 /* PluginManager.swift */,
+				BB00000000000000000149 /* PluginRegistryService.swift */,
 				BB00000000000000000125 /* HostServicesImpl.swift */,
 				BB00000000000000000126 /* PostProcessingPipeline.swift */,
 			);
@@ -1060,6 +1063,7 @@
 				AA00000000000000000118 /* PromptPalettePanel.swift in Sources */,
 				AA00000000000000000123 /* EventBus.swift in Sources */,
 				AA00000000000000000124 /* PluginManager.swift in Sources */,
+				AA00000000000000000154 /* PluginRegistryService.swift in Sources */,
 				AA00000000000000000125 /* HostServicesImpl.swift in Sources */,
 				AA00000000000000000126 /* PostProcessingPipeline.swift in Sources */,
 				AA00000000000000000127 /* PluginSettingsView.swift in Sources */,

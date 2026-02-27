@@ -1,0 +1,277 @@
+import Foundation
+import os.log
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "TypeWhisper", category: "PluginRegistry")
+
+// MARK: - Registry Models
+
+struct RegistryPlugin: Codable, Identifiable {
+    let id: String
+    let name: String
+    let version: String
+    let minHostVersion: String
+    let author: String
+    let description: String
+    let category: String
+    let size: Int64
+    let downloadURL: String
+    let iconSystemName: String?
+}
+
+struct PluginRegistryResponse: Codable {
+    let schemaVersion: Int
+    let plugins: [RegistryPlugin]
+}
+
+enum PluginInstallInfo {
+    case notInstalled
+    case installed(version: String)
+    case updateAvailable(installed: String, available: String)
+    case bundled
+}
+
+// MARK: - Plugin Registry Service
+
+@MainActor
+final class PluginRegistryService: ObservableObject {
+    nonisolated(unsafe) static var shared: PluginRegistryService!
+
+    @Published var registry: [RegistryPlugin] = []
+    @Published var fetchState: FetchState = .idle
+    @Published var installStates: [String: InstallState] = [:]
+
+    private var lastFetchDate: Date?
+    private let registryURL = URL(string: "https://typewhisper.github.io/typewhisper-mac/plugins.json")!
+    private let cacheDuration: TimeInterval = 300 // 5 minutes
+
+    enum FetchState: Equatable {
+        case idle
+        case loading
+        case loaded
+        case error(String)
+    }
+
+    enum InstallState: Equatable {
+        case downloading(Double)
+        case extracting
+        case error(String)
+    }
+
+    // MARK: - Version Comparison
+
+    static func compareVersions(_ a: String, _ b: String) -> ComparisonResult {
+        let partsA = a.split(separator: ".").compactMap { Int($0) }
+        let partsB = b.split(separator: ".").compactMap { Int($0) }
+        let count = max(partsA.count, partsB.count)
+        for i in 0..<count {
+            let va = i < partsA.count ? partsA[i] : 0
+            let vb = i < partsB.count ? partsB[i] : 0
+            if va < vb { return .orderedAscending }
+            if va > vb { return .orderedDescending }
+        }
+        return .orderedSame
+    }
+
+    // MARK: - Fetch Registry
+
+    func fetchRegistry() async {
+        if let lastFetch = lastFetchDate, Date().timeIntervalSince(lastFetch) < cacheDuration, !registry.isEmpty {
+            return
+        }
+
+        fetchState = .loading
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: registryURL)
+            let response = try JSONDecoder().decode(PluginRegistryResponse.self, from: data)
+
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
+            registry = response.plugins.filter {
+                Self.compareVersions($0.minHostVersion, appVersion) != .orderedDescending
+            }
+            lastFetchDate = Date()
+            fetchState = .loaded
+            logger.info("Fetched \(self.registry.count) plugin(s) from registry")
+        } catch {
+            fetchState = .error(error.localizedDescription)
+            logger.error("Failed to fetch registry: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Install Info
+
+    func installInfo(for pluginId: String) -> PluginInstallInfo {
+        guard let loaded = PluginManager.shared.loadedPlugins.first(where: { $0.manifest.id == pluginId }) else {
+            return .notInstalled
+        }
+
+        if loaded.isBundled {
+            return .bundled
+        }
+
+        guard let registryPlugin = registry.first(where: { $0.id == pluginId }) else {
+            return .installed(version: loaded.manifest.version)
+        }
+
+        if Self.compareVersions(registryPlugin.version, loaded.manifest.version) == .orderedDescending {
+            return .updateAvailable(installed: loaded.manifest.version, available: registryPlugin.version)
+        }
+
+        return .installed(version: loaded.manifest.version)
+    }
+
+    // MARK: - Download & Install
+
+    func downloadAndInstall(_ plugin: RegistryPlugin) async {
+        guard let url = URL(string: plugin.downloadURL) else {
+            installStates[plugin.id] = .error("Invalid download URL")
+            return
+        }
+
+        installStates[plugin.id] = .downloading(0)
+
+        do {
+            let (asyncBytes, response) = try await URLSession.shared.bytes(from: url)
+            let totalBytes = response.expectedContentLength
+            var data = Data()
+            if totalBytes > 0 {
+                data.reserveCapacity(Int(totalBytes))
+            }
+
+            var received: Int64 = 0
+            for try await byte in asyncBytes {
+                data.append(byte)
+                received += 1
+                if totalBytes > 0 && received % 65536 == 0 {
+                    let progress = Double(received) / Double(totalBytes)
+                    installStates[plugin.id] = .downloading(progress)
+                }
+            }
+
+            installStates[plugin.id] = .extracting
+
+            let tempDir = FileManager.default.temporaryDirectory
+                .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+            defer { try? FileManager.default.removeItem(at: tempDir) }
+
+            let zipPath = tempDir.appendingPathComponent("plugin.zip")
+            try data.write(to: zipPath)
+
+            let extractDir = tempDir.appendingPathComponent("extracted", isDirectory: true)
+            try FileManager.default.createDirectory(at: extractDir, withIntermediateDirectories: true)
+
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+            process.arguments = ["-xk", zipPath.path, extractDir.path]
+            try process.run()
+            process.waitUntilExit()
+
+            guard process.terminationStatus == 0 else {
+                installStates[plugin.id] = .error("Failed to extract ZIP")
+                return
+            }
+
+            // Find .bundle in extracted directory
+            let extracted = try FileManager.default.contentsOfDirectory(at: extractDir, includingPropertiesForKeys: nil)
+            guard let bundleURL = extracted.first(where: { $0.pathExtension == "bundle" }) else {
+                installStates[plugin.id] = .error("No .bundle found in ZIP")
+                return
+            }
+
+            // Unload existing version if present
+            PluginManager.shared.unloadPlugin(plugin.id)
+
+            let destURL = PluginManager.shared.pluginsDirectory
+                .appendingPathComponent(bundleURL.lastPathComponent)
+
+            // Remove existing bundle if present
+            if FileManager.default.fileExists(atPath: destURL.path) {
+                try FileManager.default.removeItem(at: destURL)
+            }
+
+            try FileManager.default.moveItem(at: bundleURL, to: destURL)
+            PluginManager.shared.loadPlugin(at: destURL)
+
+            installStates.removeValue(forKey: plugin.id)
+            logger.info("Installed plugin \(plugin.id) v\(plugin.version)")
+        } catch {
+            installStates[plugin.id] = .error(error.localizedDescription)
+            logger.error("Failed to install \(plugin.id): \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Uninstall
+
+    func uninstallPlugin(_ pluginId: String, deleteData: Bool = false) {
+        guard let bundleURL = PluginManager.shared.bundleURL(for: pluginId) else { return }
+
+        PluginManager.shared.unloadPlugin(pluginId)
+
+        try? FileManager.default.removeItem(at: bundleURL)
+
+        if deleteData {
+            let dataDir = AppConstants.appSupportDirectory
+                .appendingPathComponent("PluginData", isDirectory: true)
+                .appendingPathComponent(pluginId, isDirectory: true)
+            try? FileManager.default.removeItem(at: dataDir)
+        }
+
+        UserDefaults.standard.removeObject(forKey: "plugin.\(pluginId).enabled")
+        logger.info("Uninstalled plugin: \(pluginId)")
+    }
+
+    // MARK: - Install from File
+
+    func installFromFile(_ url: URL) async throws {
+        let fm = FileManager.default
+        let pluginsDir = PluginManager.shared.pluginsDirectory
+
+        if url.pathExtension == "bundle" {
+            let destURL = pluginsDir.appendingPathComponent(url.lastPathComponent)
+            if fm.fileExists(atPath: destURL.path) {
+                try fm.removeItem(at: destURL)
+            }
+            try fm.copyItem(at: url, to: destURL)
+            PluginManager.shared.loadPlugin(at: destURL)
+        } else if url.pathExtension == "zip" {
+            let tempDir = fm.temporaryDirectory
+                .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            try fm.createDirectory(at: tempDir, withIntermediateDirectories: true)
+            defer { try? fm.removeItem(at: tempDir) }
+
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+            process.arguments = ["-xk", url.path, tempDir.path]
+            try process.run()
+            process.waitUntilExit()
+
+            guard process.terminationStatus == 0 else {
+                throw NSError(domain: "PluginRegistry", code: 1,
+                              userInfo: [NSLocalizedDescriptionKey: "Failed to extract ZIP"])
+            }
+
+            let extracted = try fm.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil)
+            guard let bundleURL = extracted.first(where: { $0.pathExtension == "bundle" }) else {
+                throw NSError(domain: "PluginRegistry", code: 2,
+                              userInfo: [NSLocalizedDescriptionKey: "No .bundle found in ZIP"])
+            }
+
+            let destURL = pluginsDir.appendingPathComponent(bundleURL.lastPathComponent)
+            if fm.fileExists(atPath: destURL.path) {
+                try fm.removeItem(at: destURL)
+            }
+            try fm.moveItem(at: bundleURL, to: destURL)
+            PluginManager.shared.loadPlugin(at: destURL)
+        }
+    }
+
+    // MARK: - Formatted Size
+
+    static func formattedSize(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useMB, .useGB]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
+}

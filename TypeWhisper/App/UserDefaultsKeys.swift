@@ -51,4 +51,7 @@ enum UserDefaultsKeys {
     // MARK: - Appearance
     static let showMenuBarIcon = "showMenuBarIcon"
     static let menuBarIconHiddenAlertShown = "menuBarIconHiddenAlertShown"
+
+    // MARK: - Plugin Registry
+    static let pluginRegistryLastFetch = "pluginRegistryLastFetch"
 }
