@@ -43,6 +43,7 @@ Plugins can subscribe to events without modifying the transcription pipeline:
     "name": "My Plugin",
     "version": "1.0.0",
     "minHostVersion": "0.9.0",
+    "minOSVersion": "15.0",
     "author": "Your Name",
     "principalClass": "MyPluginClassName"
 }

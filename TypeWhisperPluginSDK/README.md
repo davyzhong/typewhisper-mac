@@ -22,6 +22,7 @@ Create `Contents/Resources/manifest.json` in your bundle:
   "name": "My Plugin",
   "version": "1.0.0",
   "minHostVersion": "0.11",
+  "minOSVersion": "15.0",
   "author": "Your Name",
   "principalClass": "MyPlugin"
 }
@@ -30,6 +31,7 @@ Create `Contents/Resources/manifest.json` in your bundle:
 - `id` - Unique reverse-domain identifier
 - `principalClass` - Must match `@objc(ClassName)` on your plugin class
 - `minHostVersion` - Minimum TypeWhisper version required
+- `minOSVersion` - Minimum macOS version required (plugin is skipped on older systems)
 
 ### 3. Implement the Plugin
 
@@ -344,6 +346,7 @@ let wavData = PluginWavEncoder.encode(samples, sampleRate: 16000)
 | `name` | Yes | Display name |
 | `version` | Yes | Semver string (e.g. `1.0.0`) |
 | `minHostVersion` | No | Minimum TypeWhisper version |
+| `minOSVersion` | No | Minimum macOS version (e.g. `15.0`, `26.0`). Plugin is skipped on older systems. |
 | `author` | No | Author name |
 | `principalClass` | Yes | Objective-C class name, must match `@objc(Name)` |
 
@@ -366,6 +369,7 @@ Registry entry format:
   "name": "My Plugin",
   "version": "1.0.0",
   "minHostVersion": "0.11",
+  "minOSVersion": "15.0",
   "author": "Your Name",
   "description": "What your plugin does.",
   "category": "transcription|llm|postprocessor|action",
