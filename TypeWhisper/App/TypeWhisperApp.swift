@@ -35,23 +35,12 @@ struct TypeWhisperApp: App {
     }
 
     private var settingsScene: some Scene {
-        if #available(macOS 15, *) {
-            Window(String(localized: "Settings"), id: "settings") {
-                SettingsView()
-                    .background(SettingsWindowBridge())
-            }
-            .windowResizability(.contentMinSize)
-            .defaultSize(width: 1050, height: 600)
-            .defaultLaunchBehavior(showMenuBarIcon ? .suppressed : .presented)
-            .restorationBehavior(.disabled)
-        } else {
-            Window(String(localized: "Settings"), id: "settings") {
-                SettingsView()
-                    .background(SettingsWindowBridge())
-            }
-            .windowResizability(.contentMinSize)
-            .defaultSize(width: 1050, height: 600)
+        Window(String(localized: "Settings"), id: "settings") {
+            SettingsView()
+                .background(SettingsWindowBridge())
         }
+        .windowResizability(.contentMinSize)
+        .defaultSize(width: 1050, height: 600)
     }
 
     init() {
