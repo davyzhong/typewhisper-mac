@@ -205,6 +205,10 @@ struct NotchIndicatorView: View {
     private var rightContent: some View {
         if case .recording = viewModel.state {
             recordingContent(for: viewModel.notchIndicatorRightContent)
+        } else if case .processing = viewModel.state {
+            ProgressView()
+                .controlSize(.mini)
+                .tint(.white)
         }
     }
 
