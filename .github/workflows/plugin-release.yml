@@ -39,6 +39,7 @@ jobs:
             parakeet) TARGET="ParakeetPlugin" ;;
             speechanalyzer) TARGET="SpeechAnalyzerPlugin" ;;
             openai-compatible) TARGET="OpenAICompatiblePlugin" ;;
+            voxtral) TARGET="VoxtralPlugin" ;;
             *) echo "Unknown plugin: $PLUGIN_NAME" && exit 1 ;;
           esac
           echo "TARGET=$TARGET" >> $GITHUB_ENV
