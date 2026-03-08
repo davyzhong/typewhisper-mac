@@ -191,6 +191,9 @@ final class ParakeetPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Send
         }
     }
 
+    @objc func triggerAutoUnload() { unloadModel(clearPersistence: false) }
+    @objc func triggerRestoreModel() { Task { await restoreLoadedModel() } }
+
     func unloadModel(clearPersistence: Bool = true) {
         asrManager = nil
         loadedModelId = nil

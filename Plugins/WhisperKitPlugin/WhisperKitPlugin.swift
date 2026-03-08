@@ -229,6 +229,9 @@ final class WhisperKitPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Se
         }
     }
 
+    @objc func triggerAutoUnload() { unloadModel(clearPersistence: false) }
+    @objc func triggerRestoreModel() { Task { await restoreLoadedModel() } }
+
     func unloadModel(clearPersistence: Bool = true) {
         whisperKit = nil
         loadedModelId = nil

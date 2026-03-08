@@ -156,6 +156,9 @@ final class Qwen3Plugin: NSObject, TranscriptionEnginePlugin, @unchecked Sendabl
         }
     }
 
+    @objc func triggerAutoUnload() { unloadModel(clearPersistence: false) }
+    @objc func triggerRestoreModel() { Task { await restoreLoadedModel() } }
+
     func unloadModel(clearPersistence: Bool = true) {
         model = nil
         loadedModelId = nil

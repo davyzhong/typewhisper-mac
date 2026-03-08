@@ -36,9 +36,11 @@ final class APIHandlers: @unchecked Sendable {
     // MARK: - POST /v1/transcribe
 
     private func handleTranscribe(_ request: HTTPRequest) async -> HTTPResponse {
-        let isReady = await modelManager.isModelReady
-        guard isReady else {
-            return .error(status: 503, message: "No model loaded. Load a model in TypeWhisper first.")
+        // Note: Don't pre-check isModelReady here - let transcribe() handle auto-restore
+        // for models that were auto-unloaded but can be re-loaded.
+        let hasEngine = await modelManager.selectedProviderId != nil
+        guard hasEngine else {
+            return .error(status: 503, message: "No engine selected. Select an engine in TypeWhisper first.")
         }
 
         let audioData: Data

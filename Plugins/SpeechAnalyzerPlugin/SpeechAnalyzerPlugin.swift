@@ -227,6 +227,9 @@ final class SpeechAnalyzerPlugin: NSObject, TranscriptionEnginePlugin, @unchecke
         }
     }
 
+    @objc func triggerAutoUnload() { unloadModel(clearPersistence: false) }
+    @objc func triggerRestoreModel() { Task { await restoreLoadedModel() } }
+
     func unloadModel(clearPersistence: Bool = true) {
         if let locale = currentLocale {
             releaseTask = Task { await AssetInventory.release(reservedLocale: locale) }

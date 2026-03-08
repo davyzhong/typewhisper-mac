@@ -36,7 +36,7 @@ final class ModelManagerService: ObservableObject {
         }
     }
 
-    private var autoUnloadWorkItem: DispatchWorkItem?
+    private var autoUnloadTask: Task<Void, Never>?
 
     private let providerKey = UserDefaultsKeys.selectedEngine
     private let modelKey = UserDefaultsKeys.selectedModelId
@@ -136,7 +136,7 @@ final class ModelManagerService: ObservableObject {
         }
 
         if !plugin.isConfigured {
-            await plugin.restoreLoadedModel()
+            await triggerRestoreModel(plugin)
         }
         guard plugin.isConfigured else {
             throw TranscriptionEngineError.modelNotLoaded
@@ -193,7 +193,7 @@ final class ModelManagerService: ObservableObject {
         }
 
         if !plugin.isConfigured {
-            await plugin.restoreLoadedModel()
+            await triggerRestoreModel(plugin)
         }
         guard plugin.isConfigured else {
             throw TranscriptionEngineError.modelNotLoaded
@@ -249,36 +249,50 @@ final class ModelManagerService: ObservableObject {
     // MARK: - Auto-Unload
 
     func scheduleAutoUnloadIfNeeded() {
-        autoUnloadWorkItem?.cancel()
-        autoUnloadWorkItem = nil
+        autoUnloadTask?.cancel()
+        autoUnloadTask = nil
 
         let seconds = autoUnloadSeconds
         guard seconds != 0 else { return }
 
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.performAutoUnload()
+        autoUnloadTask = Task { [weak self] in
+            if seconds == -1 {
+                // Small delay to let transcription call stack fully unwind
+                // before releasing the model (avoids EXC_BAD_ACCESS from MLX cleanup)
+                try? await Task.sleep(for: .milliseconds(100))
+            } else {
+                try? await Task.sleep(for: .seconds(seconds))
+            }
+            guard !Task.isCancelled else { return }
+            await self?.performAutoUnload()
         }
-        autoUnloadWorkItem = workItem
-
-        if seconds == -1 {
-            // Defer to next run loop iteration so the transcription call stack fully unwinds
-            // before releasing the model (avoids EXC_BAD_ACCESS from MLX cleanup)
-            DispatchQueue.main.async(execute: workItem)
-            return
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(seconds), execute: workItem)
     }
 
     func cancelAutoUnloadTimer() {
-        autoUnloadWorkItem?.cancel()
-        autoUnloadWorkItem = nil
+        autoUnloadTask?.cancel()
+        autoUnloadTask = nil
     }
 
     private func performAutoUnload() {
         guard let providerId = selectedProviderId,
               let plugin = PluginManager.shared.transcriptionEngine(for: providerId),
               plugin.isConfigured else { return }
-        plugin.unloadModel(clearPersistence: false)
+        guard let nsPlugin = plugin as? NSObject else { return }
+        let sel = NSSelectorFromString("triggerAutoUnload")
+        guard nsPlugin.responds(to: sel) else { return }
+        nsPlugin.perform(sel)
+    }
+
+    /// Trigger model restore via ObjC dispatch (avoids Swift protocol witness table issues
+    /// with dynamically loaded plugin bundles) and poll until ready.
+    private func triggerRestoreModel(_ plugin: TranscriptionEnginePlugin) async {
+        guard let nsPlugin = plugin as? NSObject,
+              nsPlugin.responds(to: NSSelectorFromString("triggerRestoreModel")) else { return }
+        nsPlugin.perform(NSSelectorFromString("triggerRestoreModel"))
+        // Poll until model is loaded (up to 30s)
+        for _ in 0..<300 {
+            try? await Task.sleep(for: .milliseconds(100))
+            if plugin.isConfigured { return }
+        }
     }
 }

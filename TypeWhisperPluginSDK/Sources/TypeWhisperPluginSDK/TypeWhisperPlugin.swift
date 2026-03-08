@@ -114,9 +114,6 @@ public protocol TranscriptionEnginePlugin: TypeWhisperPlugin {
     var supportedLanguages: [String] { get }
     func transcribe(audio: AudioData, language: String?, translate: Bool, prompt: String?,
                     onProgress: @Sendable @escaping (String) -> Bool) async throws -> PluginTranscriptionResult
-
-    func unloadModel(clearPersistence: Bool)
-    func restoreLoadedModel() async
 }
 
 public extension TranscriptionEnginePlugin {
@@ -126,8 +123,6 @@ public extension TranscriptionEnginePlugin {
                     onProgress: @Sendable @escaping (String) -> Bool) async throws -> PluginTranscriptionResult {
         try await transcribe(audio: audio, language: language, translate: translate, prompt: prompt)
     }
-    func unloadModel(clearPersistence: Bool) {}
-    func restoreLoadedModel() async {}
 }
 
 // MARK: - Action Plugin

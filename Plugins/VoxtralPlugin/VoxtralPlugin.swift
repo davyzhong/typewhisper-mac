@@ -179,6 +179,9 @@ final class VoxtralPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Senda
         }
     }
 
+    @objc func triggerAutoUnload() { unloadModel(clearPersistence: false) }
+    @objc func triggerRestoreModel() { Task { await restoreLoadedModel() } }
+
     func unloadModel(clearPersistence: Bool = true) {
         model = nil
         loadedModelId = nil
