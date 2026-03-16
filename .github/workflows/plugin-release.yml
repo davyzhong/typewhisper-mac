@@ -47,12 +47,19 @@ jobs:
             livetranscript) TARGET="LiveTranscriptPlugin" ;;
             *) echo "Unknown plugin: $PLUGIN_NAME" && exit 1 ;;
           esac
-          # Set deployment target and Xcode version per plugin
-          # SpeechAnalyzer requires macOS 26+ APIs -> Xcode 26.2
-          # All others target macOS 14+ -> Xcode 16.2 (avoids libswiftCompatibilitySpan.dylib dependency)
+          # Set deployment target, Xcode version, and Swift embedding per plugin
+          # - SpeechAnalyzer: Xcode 26.2, macOS 26 (native APIs, no compat libs needed)
+          # - Qwen3/Voxtral: Xcode 26.2, macOS 14 (mlx-audio-swift needs Swift 6.2,
+          #   embed Swift compat libs so libswiftCompatibilitySpan.dylib loads on macOS 15)
+          # - All others: Xcode 16.2, macOS 14 (Swift 6.0, no compat libs needed)
+          EMBED_SWIFT_LIBS="NO"
           if [ "$TARGET" = "SpeechAnalyzerPlugin" ]; then
             DEPLOY_TARGET="26.0"
             XCODE_VERSION="26.2"
+          elif [ "$TARGET" = "Qwen3Plugin" ] || [ "$TARGET" = "VoxtralPlugin" ]; then
+            DEPLOY_TARGET="14.0"
+            XCODE_VERSION="26.2"
+            EMBED_SWIFT_LIBS="YES"
           else
             DEPLOY_TARGET="14.0"
             XCODE_VERSION="16.2"
@@ -60,7 +67,8 @@ jobs:
           echo "TARGET=$TARGET" >> $GITHUB_ENV
           echo "DEPLOY_TARGET=$DEPLOY_TARGET" >> $GITHUB_ENV
           echo "XCODE_VERSION=$XCODE_VERSION" >> $GITHUB_ENV
-          echo "Target: $TARGET (macOS $DEPLOY_TARGET, Xcode $XCODE_VERSION)"
+          echo "EMBED_SWIFT_LIBS=$EMBED_SWIFT_LIBS" >> $GITHUB_ENV
+          echo "Target: $TARGET (macOS $DEPLOY_TARGET, Xcode $XCODE_VERSION, embed=$EMBED_SWIFT_LIBS)"
 
       - name: Checkout
         uses: actions/checkout@v6
@@ -102,6 +110,12 @@ jobs:
 
       - name: Build Plugin
         run: |
+          EXTRA_SETTINGS=""
+          if [ "$EMBED_SWIFT_LIBS" = "YES" ]; then
+            # Embed Swift compat libs (libswiftCompatibilitySpan.dylib) in plugin bundle
+            # and add @loader_path/../Frameworks to rpath so they are found on macOS 15
+            EXTRA_SETTINGS="ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=YES LD_RUNPATH_SEARCH_PATHS=@loader_path/../Frameworks"
+          fi
           xcodebuild -project TypeWhisper.xcodeproj \
             -target "$TARGET" \
             -configuration Release \
@@ -111,7 +125,8 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             DEVELOPMENT_TEAM=2D8ALY3LCL \
             MACOSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" \
-            MARKETING_VERSION="$PLUGIN_VERSION"
+            MARKETING_VERSION="$PLUGIN_VERSION" \
+            $EXTRA_SETTINGS
 
       - name: Import Signing Certificate
         env:
