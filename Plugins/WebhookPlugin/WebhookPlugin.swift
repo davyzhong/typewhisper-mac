@@ -179,7 +179,7 @@ final class ExampleWebhookService: ObservableObject, @unchecked Sendable {
 
         do {
             request.httpBody = try JSONEncoder().encode(payload)
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await PluginHTTPClient.data(for: request)
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
             let success = (200...299).contains(statusCode)
 

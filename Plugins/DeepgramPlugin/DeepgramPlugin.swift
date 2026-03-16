@@ -458,7 +458,7 @@ final class DeepgramPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Send
         request.httpBody = audio.wavData
         request.timeoutInterval = 60
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await PluginHTTPClient.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PluginTranscriptionError.apiError("No HTTP response")
@@ -648,7 +648,7 @@ final class DeepgramPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Send
         request.timeoutInterval = 10
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await PluginHTTPClient.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else { return false }
             return httpResponse.statusCode == 200
         } catch {

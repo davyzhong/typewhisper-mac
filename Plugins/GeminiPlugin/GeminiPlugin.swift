@@ -110,7 +110,7 @@ final class GeminiPlugin: NSObject, LLMProviderPlugin, @unchecked Sendable {
         request.timeoutInterval = 10
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await PluginHTTPClient.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else { return false }
             return httpResponse.statusCode == 200
         } catch {

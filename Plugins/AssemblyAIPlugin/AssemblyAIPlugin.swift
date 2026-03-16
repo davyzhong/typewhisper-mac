@@ -164,7 +164,7 @@ final class AssemblyAIPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Se
         request.httpBody = wavData
         request.timeoutInterval = 120
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await PluginHTTPClient.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PluginTranscriptionError.apiError("No HTTP response")
@@ -209,7 +209,7 @@ final class AssemblyAIPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Se
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         request.timeoutInterval = 30
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await PluginHTTPClient.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PluginTranscriptionError.apiError("No HTTP response")
@@ -244,7 +244,7 @@ final class AssemblyAIPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Se
         for _ in 0..<300 {
             try await Task.sleep(for: .seconds(1))
 
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await PluginHTTPClient.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 continue
@@ -382,7 +382,7 @@ final class AssemblyAIPlugin: NSObject, TranscriptionEnginePlugin, @unchecked Se
         request.timeoutInterval = 10
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await PluginHTTPClient.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else { return false }
             return httpResponse.statusCode == 200
         } catch {

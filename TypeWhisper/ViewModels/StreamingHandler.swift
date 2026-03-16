@@ -77,7 +77,7 @@ final class StreamingHandler {
                             self.confirmedStreamingText = stable
                         }
                     } catch {
-                        // Streaming errors are non-fatal; final transcription will still run
+                        logger.warning("Streaming preview error: \(error.localizedDescription)")
                     }
                 }
 

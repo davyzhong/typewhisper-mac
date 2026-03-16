@@ -155,7 +155,7 @@ final class LinearPlugin: NSObject, ActionPlugin, @unchecked Sendable {
         let body: [String: Any] = ["query": query]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await PluginHTTPClient.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw NSError(domain: "LinearPlugin", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])
@@ -298,7 +298,7 @@ final class LinearPlugin: NSObject, ActionPlugin, @unchecked Sendable {
         let body: [String: Any] = ["query": "{ viewer { id } }"]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
-        guard let (data, response) = try? await URLSession.shared.data(for: request),
+        guard let (data, response) = try? await PluginHTTPClient.data(for: request),
               let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200,
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],

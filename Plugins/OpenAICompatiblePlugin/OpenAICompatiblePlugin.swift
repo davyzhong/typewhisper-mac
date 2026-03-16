@@ -210,7 +210,7 @@ final class OpenAICompatiblePlugin: NSObject, TranscriptionEnginePlugin, LLMProv
         request.timeoutInterval = 10
 
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await PluginHTTPClient.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 200 else { return [] }
 
@@ -236,7 +236,7 @@ final class OpenAICompatiblePlugin: NSObject, TranscriptionEnginePlugin, LLMProv
         request.timeoutInterval = 10
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await PluginHTTPClient.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else { return false }
             return httpResponse.statusCode == 200
         } catch {

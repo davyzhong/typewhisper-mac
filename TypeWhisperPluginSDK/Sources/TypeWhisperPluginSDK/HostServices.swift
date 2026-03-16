@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 // MARK: - Host Services
 
@@ -26,6 +27,41 @@ public protocol HostServices: Sendable {
 
     // Notify host that plugin capabilities changed (e.g. model loaded/unloaded)
     func notifyCapabilitiesChanged()
+}
+
+// MARK: - HTTP Client (Ephemeral Sessions)
+
+/// Drop-in replacement for `URLSession.shared.data(for:)` that creates a fresh ephemeral
+/// session per call. This prevents stale HTTP/2 connections after sleep/wake or network changes
+/// from hanging indefinitely.
+public enum PluginHTTPClient {
+    private static let logger = Logger(subsystem: "com.typewhisper.sdk", category: "HTTP")
+
+    public static func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        let config = URLSessionConfiguration.ephemeral
+        let timeout = request.timeoutInterval > 0 ? request.timeoutInterval : 30
+        config.timeoutIntervalForRequest = timeout
+        config.timeoutIntervalForResource = max(timeout * 2, 90)
+        let session = URLSession(configuration: config)
+        defer { session.finishTasksAndInvalidate() }
+
+        let method = request.httpMethod ?? "GET"
+        let url = request.url?.absoluteString ?? "unknown"
+        logger.info("\(method) \(url)")
+        let start = ContinuousClock.now
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            let elapsed = ContinuousClock.now - start
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            logger.info("\(method) \(url) -> \(status) (\(elapsed))")
+            return (data, response)
+        } catch {
+            let elapsed = ContinuousClock.now - start
+            logger.error("\(method) \(url) failed after \(elapsed): \(error.localizedDescription)")
+            throw error
+        }
+    }
 }
 
 // MARK: - WAV Encoder Utility
@@ -135,7 +171,7 @@ public struct PluginOpenAITranscriptionHelper: Sendable {
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 120
+        request.timeoutInterval = 30
 
         var body = Data()
 
@@ -166,7 +202,7 @@ public struct PluginOpenAITranscriptionHelper: Sendable {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
 
-        let (responseData, response) = try await URLSession.shared.data(for: request)
+        let (responseData, response) = try await PluginHTTPClient.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PluginTranscriptionError.networkError("Invalid response")
@@ -198,7 +234,7 @@ public struct PluginOpenAITranscriptionHelper: Sendable {
         request.timeoutInterval = 10
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await PluginHTTPClient.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else { return false }
             return httpResponse.statusCode == 200
         } catch {
@@ -297,10 +333,10 @@ public struct PluginOpenAIChatHelper: Sendable {
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 60
+        request.timeoutInterval = 30
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await PluginHTTPClient.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PluginChatError.networkError("Invalid response")
