@@ -9,11 +9,17 @@ struct AdvancedSettingsView: View {
     @State private var raycastInstalled = false
 
     @AppStorage(UserDefaultsKeys.historyRetentionDays) private var historyRetentionDays: Int = 0
+    @AppStorage(UserDefaultsKeys.saveAudioWithHistory) private var saveAudioWithHistory: Bool = false
 
     var body: some View {
         Form {
             // MARK: - History
             Section(String(localized: "History")) {
+                Toggle(String(localized: "Save audio with transcriptions"), isOn: $saveAudioWithHistory)
+                Text(String(localized: "Stores a WAV recording alongside each transcription. Uses approximately 1 MB per 30 seconds."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
                 Picker(String(localized: "Auto-delete after"), selection: $historyRetentionDays) {
                     Text(String(localized: "Unlimited")).tag(0)
                     Text(String(localized: "30 days")).tag(30)

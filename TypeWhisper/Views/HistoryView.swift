@@ -377,6 +377,15 @@ private struct RecordDetailView: View {
             .padding(10)
             .background(.bar)
 
+            // Audio Playback
+            if let audioURL = viewModel.audioFileURL(for: record) {
+                Divider()
+                AudioPlaybackBar(audioURL: audioURL, playbackService: viewModel.audioPlaybackService)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(.bar)
+            }
+
             Divider()
 
             // Correction Banner
@@ -432,6 +441,9 @@ private struct RecordDetailView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .onChange(of: record.id) {
+            viewModel.audioPlaybackService.stop()
+        }
     }
 
     @ViewBuilder
@@ -486,6 +498,63 @@ private struct RecordDetailView: View {
         let s = Int(seconds)
         if s < 60 { return "\(s)s" }
         return "\(s / 60)m \(s % 60)s"
+    }
+}
+
+// MARK: - Audio Playback Bar
+
+private struct AudioPlaybackBar: View {
+    let audioURL: URL
+    @ObservedObject var playbackService: AudioPlaybackService
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Button {
+                playbackService.togglePlayPause(url: audioURL)
+            } label: {
+                Image(systemName: playbackService.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.callout)
+                    .frame(width: 20)
+            }
+            .buttonStyle(.borderless)
+
+            if playbackService.duration > 0 {
+                Slider(
+                    value: Binding(
+                        get: { playbackService.currentTime },
+                        set: { playbackService.seek(to: $0) }
+                    ),
+                    in: 0...playbackService.duration
+                )
+                .controlSize(.small)
+
+                Text(formatTime(playbackService.currentTime) + " / " + formatTime(playbackService.duration))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            } else {
+                Spacer()
+                Text(String(localized: "Audio"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Button {
+                NSWorkspace.shared.activateFileViewerSelecting([audioURL])
+            } label: {
+                Image(systemName: "folder")
+                    .font(.callout)
+            }
+            .buttonStyle(.borderless)
+            .help(String(localized: "Show in Finder"))
+        }
+    }
+
+    private func formatTime(_ seconds: TimeInterval) -> String {
+        let s = Int(seconds)
+        let m = s / 60
+        let r = s % 60
+        return String(format: "%d:%02d", m, r)
     }
 }
 

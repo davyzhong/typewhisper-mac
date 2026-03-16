@@ -15,6 +15,7 @@ final class TranscriptionRecord {
     var engineUsed: String
     var modelUsed: String?
     var wordsCount: Int = 0
+    var audioFileName: String?
 
     var preview: String { String(finalText.prefix(100)) }
 
@@ -37,7 +38,8 @@ final class TranscriptionRecord {
         durationSeconds: Double,
         language: String? = nil,
         engineUsed: String,
-        modelUsed: String? = nil
+        modelUsed: String? = nil,
+        audioFileName: String? = nil
     ) {
         self.id = id
         self.timestamp = timestamp
@@ -51,5 +53,6 @@ final class TranscriptionRecord {
         self.engineUsed = engineUsed
         self.modelUsed = modelUsed
         self.wordsCount = finalText.split(separator: " ").count
+        self.audioFileName = audioFileName
     }
 }

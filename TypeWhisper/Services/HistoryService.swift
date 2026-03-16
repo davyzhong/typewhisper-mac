@@ -16,10 +16,16 @@ final class HistoryService: ObservableObject {
     private(set) var totalWords: Int = 0
     private(set) var totalDuration: Double = 0
 
+    private let audioDirectory: URL
+
     init() {
         let schema = Schema([TranscriptionRecord.self])
         let storeDir = AppConstants.appSupportDirectory
         try? FileManager.default.createDirectory(at: storeDir, withIntermediateDirectories: true)
+
+        let audioDir = storeDir.appendingPathComponent("audio", isDirectory: true)
+        try? FileManager.default.createDirectory(at: audioDir, withIntermediateDirectories: true)
+        self.audioDirectory = audioDir
 
         let storeURL = storeDir.appendingPathComponent("history.store")
         let config = ModelConfiguration(url: storeURL)
@@ -53,7 +59,8 @@ final class HistoryService: ObservableObject {
         durationSeconds: Double,
         language: String?,
         engineUsed: String,
-        modelUsed: String? = nil
+        modelUsed: String? = nil,
+        audioSamples: [Float]? = nil
     ) {
         let sanitizedRaw = Self.sanitize(rawText)
         let sanitizedFinal = Self.sanitize(finalText)
@@ -65,7 +72,24 @@ final class HistoryService: ObservableObject {
             logger.warning("Skipping history record: invalid duration \(durationSeconds)")
             return
         }
+        let recordId = UUID()
+        var audioFileName: String?
+
+        if let samples = audioSamples, !samples.isEmpty {
+            let fileName = "\(recordId.uuidString).wav"
+            let fileURL = audioDirectory.appendingPathComponent(fileName)
+            let wavData = WavEncoder.encode(samples)
+            do {
+                try wavData.write(to: fileURL, options: .atomic)
+                audioFileName = fileName
+                logger.info("Saved audio file: \(fileName)")
+            } catch {
+                logger.error("Failed to save audio file: \(error.localizedDescription)")
+            }
+        }
+
         let record = TranscriptionRecord(
+            id: recordId,
             rawText: sanitizedRaw,
             finalText: sanitizedFinal,
             appName: appName.flatMap { Self.sanitize($0).isEmpty ? nil : Self.sanitize($0) },
@@ -74,11 +98,19 @@ final class HistoryService: ObservableObject {
             durationSeconds: durationSeconds,
             language: language,
             engineUsed: engineUsed.isEmpty ? "unknown" : engineUsed,
-            modelUsed: modelUsed
+            modelUsed: modelUsed,
+            audioFileName: audioFileName
         )
         modelContext.insert(record)
         save()
         fetchRecords()
+    }
+
+    func audioFileURL(for record: TranscriptionRecord) -> URL? {
+        guard let fileName = record.audioFileName else { return nil }
+        let url = audioDirectory.appendingPathComponent(fileName)
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return url
     }
 
     func updateRecord(_ record: TranscriptionRecord, finalText: String) {
@@ -89,6 +121,7 @@ final class HistoryService: ObservableObject {
     }
 
     func deleteRecord(_ record: TranscriptionRecord) {
+        deleteAudioFile(for: record)
         modelContext.delete(record)
         save()
         fetchRecords()
@@ -96,6 +129,7 @@ final class HistoryService: ObservableObject {
 
     func deleteRecords(_ records: [TranscriptionRecord]) {
         for record in records {
+            deleteAudioFile(for: record)
             modelContext.delete(record)
         }
         save()
@@ -104,6 +138,7 @@ final class HistoryService: ObservableObject {
 
     func clearAll() {
         for record in records {
+            deleteAudioFile(for: record)
             modelContext.delete(record)
         }
         save()
@@ -135,6 +170,7 @@ final class HistoryService: ObservableObject {
         let old = records.filter { $0.timestamp < cutoff }
         guard !old.isEmpty else { return }
         for record in old {
+            deleteAudioFile(for: record)
             modelContext.delete(record)
         }
         save()
@@ -169,6 +205,12 @@ final class HistoryService: ObservableObject {
         totalRecords = records.count
         totalWords = records.reduce(0) { $0 + $1.wordsCount }
         totalDuration = records.reduce(0) { $0 + $1.durationSeconds }
+    }
+
+    private func deleteAudioFile(for record: TranscriptionRecord) {
+        guard let fileName = record.audioFileName else { return }
+        let fileURL = audioDirectory.appendingPathComponent(fileName)
+        try? FileManager.default.removeItem(at: fileURL)
     }
 
     /// Remove null bytes and other control characters that can crash CoreData/SQLite.

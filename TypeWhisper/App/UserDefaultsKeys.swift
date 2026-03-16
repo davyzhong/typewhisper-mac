@@ -43,6 +43,7 @@ enum UserDefaultsKeys {
 
     // MARK: - History
     static let historyRetentionDays = "historyRetentionDays"
+    static let saveAudioWithHistory = "saveAudioWithHistory"
 
     // MARK: - Notch Indicator
     static let overlayPosition = "overlayPosition"

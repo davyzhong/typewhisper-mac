@@ -508,6 +508,9 @@ final class DictationViewModel: ObservableObject {
         let padCount = Int(0.3 * AudioRecordingService.targetSampleRate)
         samples.append(contentsOf: [Float](repeating: 0, count: padCount))
 
+        let saveAudio = UserDefaults.standard.bool(forKey: UserDefaultsKeys.saveAudioWithHistory)
+        let audioSamplesForHistory: [Float]? = saveAudio ? samples : nil
+
         let audioDurationForEvent = Double(samples.count) / 16000.0
         EventBus.shared.emit(.recordingStopped(RecordingStoppedPayload(
             durationSeconds: audioDurationForEvent
@@ -622,7 +625,8 @@ final class DictationViewModel: ObservableObject {
                     durationSeconds: audioDuration,
                     language: language,
                     engineUsed: result.engineUsed,
-                    modelUsed: modelDisplayName
+                    modelUsed: modelDisplayName,
+                    audioSamples: audioSamplesForHistory
                 )
 
                 EventBus.shared.emit(.transcriptionCompleted(TranscriptionCompletedPayload(

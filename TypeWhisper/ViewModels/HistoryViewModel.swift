@@ -76,6 +76,8 @@ final class HistoryViewModel: ObservableObject {
     @Published var correctionSuggestions: [CorrectionSuggestion] = []
     @Published var showCorrectionBanner: Bool = false
 
+    let audioPlaybackService = AudioPlaybackService()
+
     // Filter state
     @Published var selectedAppFilter: String? = nil
     @Published var selectedTimeRange: HistoryTimeRange = .all
@@ -153,6 +155,7 @@ final class HistoryViewModel: ObservableObject {
 
     func selectRecord(_ record: TranscriptionRecord?) {
         cancelEditing()
+        audioPlaybackService.stop()
         if let record {
             selectedRecordIDs = [record.id]
         } else {
@@ -244,6 +247,10 @@ final class HistoryViewModel: ObservableObject {
         } else {
             HistoryExporter.saveMultipleToFile(records, format: format)
         }
+    }
+
+    func audioFileURL(for record: TranscriptionRecord) -> URL? {
+        historyService.audioFileURL(for: record)
     }
 
     func dismissCorrectionBanner() {

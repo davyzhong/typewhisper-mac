@@ -4132,6 +4132,46 @@
           }
         }
       }
+    },
+    "Save audio with transcriptions" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio mit Transkriptionen speichern"
+          }
+        }
+      }
+    },
+    "Stores a WAV recording alongside each transcription. Uses approximately 1 MB per 30 seconds." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichert eine WAV-Aufnahme zusammen mit jeder Transkription. Verbraucht ca. 1 MB pro 30 Sekunden."
+          }
+        }
+      }
+    },
+    "Audio" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Finder zeigen"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
