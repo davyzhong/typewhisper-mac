@@ -40,6 +40,7 @@ final class ProfilesViewModel: ObservableObject {
     @Published var editorEngineOverride: String?
     @Published var editorCloudModelOverride: String?
     @Published var editorPromptActionId: String?
+    @Published var editorMemoryEnabled: Bool = false
     @Published var editorHotkey: UnifiedHotkey?
     @Published var editorHotkeyLabel: String = ""
     @Published var editorPriority: Int = 0
@@ -89,6 +90,7 @@ final class ProfilesViewModel: ObservableObject {
             engineOverride: editorEngineOverride,
             cloudModelOverride: editorCloudModelOverride,
             promptActionId: editorPromptActionId,
+            memoryEnabled: editorMemoryEnabled,
             hotkeyData: editorHotkey.flatMap { try? JSONEncoder().encode($0) },
             priority: editorPriority
         )
@@ -105,6 +107,7 @@ final class ProfilesViewModel: ObservableObject {
             profile.engineOverride = editorEngineOverride
             profile.cloudModelOverride = editorCloudModelOverride
             profile.promptActionId = editorPromptActionId
+            profile.memoryEnabled = editorMemoryEnabled
             profile.hotkey = editorHotkey
             profile.priority = editorPriority
             profileService.updateProfile(profile)
@@ -135,6 +138,7 @@ final class ProfilesViewModel: ObservableObject {
         editorEngineOverride = nil
         editorCloudModelOverride = nil
         editorPromptActionId = nil
+        editorMemoryEnabled = false
         editorHotkey = nil
         editorHotkeyLabel = ""
         editorPriority = 0
@@ -163,6 +167,7 @@ final class ProfilesViewModel: ObservableObject {
             editorCloudModelOverride = profile.cloudModelOverride
         }
         editorPromptActionId = profile.promptActionId
+        editorMemoryEnabled = profile.memoryEnabled
         editorHotkey = profile.hotkey
         editorHotkeyLabel = profile.hotkey.map { HotkeyService.displayName(for: $0) } ?? ""
         editorPriority = profile.priority

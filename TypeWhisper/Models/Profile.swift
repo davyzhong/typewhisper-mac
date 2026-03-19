@@ -15,6 +15,7 @@ final class Profile {
     var engineOverride: String?
     var cloudModelOverride: String?
     var promptActionId: String?
+    var memoryEnabled: Bool
     var hotkeyData: Data?
     var createdAt: Date
     var updatedAt: Date
@@ -42,6 +43,7 @@ final class Profile {
         engineOverride: String? = nil,
         cloudModelOverride: String? = nil,
         promptActionId: String? = nil,
+        memoryEnabled: Bool = false,
         hotkeyData: Data? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
@@ -58,6 +60,7 @@ final class Profile {
         self.engineOverride = engineOverride
         self.cloudModelOverride = cloudModelOverride
         self.promptActionId = promptActionId
+        self.memoryEnabled = memoryEnabled
         self.hotkeyData = hotkeyData
         self.createdAt = createdAt
         self.updatedAt = updatedAt

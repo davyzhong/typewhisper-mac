@@ -25,6 +25,7 @@ final class ServiceContainer: ObservableObject {
     let pluginManager: PluginManager
     let pluginRegistryService: PluginRegistryService
     let widgetDataService: WidgetDataService
+    let memoryService: MemoryService
 
     // HTTP API
     let httpServer: HTTPServer
@@ -70,6 +71,8 @@ final class ServiceContainer: ObservableObject {
         pluginManager = PluginManager()
         pluginRegistryService = PluginRegistryService()
         widgetDataService = WidgetDataService(historyService: historyService)
+        memoryService = MemoryService(promptProcessingService: promptProcessingService)
+        promptProcessingService.memoryService = memoryService
 
         // ViewModels (created before HTTP API so DictationViewModel is available)
         fileTranscriptionViewModel = FileTranscriptionViewModel(
@@ -163,6 +166,9 @@ final class ServiceContainer: ObservableObject {
 
         // Check for plugin updates in background
         pluginRegistryService.checkForUpdatesInBackground()
+
+        // Start memory service
+        memoryService.startListening()
 
         // Migrate stale cloudModelOverride in profiles
         for profile in profileService.profiles {

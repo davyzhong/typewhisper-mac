@@ -57,6 +57,13 @@ enum UserDefaultsKeys {
     static let showMenuBarIcon = "showMenuBarIcon"
     static let menuBarIconHiddenAlertShown = "menuBarIconHiddenAlertShown"
 
+    // MARK: - Memory
+    static let memoryEnabled = "memoryEnabled"
+    static let memoryExtractionProvider = "memoryExtractionProvider"
+    static let memoryExtractionModel = "memoryExtractionModel"
+    static let memoryMinTextLength = "memoryMinTextLength"
+    static let memoryExtractionPrompt = "memoryExtractionPrompt"
+
     // MARK: - Plugin Registry
     static let pluginRegistryLastFetch = "pluginRegistryLastFetch"
 }
