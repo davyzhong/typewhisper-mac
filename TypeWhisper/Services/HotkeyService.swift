@@ -368,13 +368,12 @@ final class HotkeyService: ObservableObject {
         // Global slots
         for slotType in HotkeySlotType.allCases {
             guard var state = slots[slotType], let hotkey = state.hotkey else { continue }
-            let (keyDown, keyUp) = processKeyEvent(event, hotkey: hotkey, state: &state)
+            let (keyDown, keyUp, isMatch) = processKeyEvent(event, hotkey: hotkey, state: &state)
             slots[slotType] = state
+            if isMatch { shouldSuppress = true }
             if keyDown {
-                shouldSuppress = true
                 Task { @MainActor [weak self] in self?.handleKeyDown(slotType: slotType) }
             } else if keyUp {
-                shouldSuppress = true
                 Task { @MainActor [weak self] in self?.handleKeyUp(slotType: slotType) }
             }
         }
@@ -385,18 +384,17 @@ final class HotkeyService: ObservableObject {
             var state = SlotState(hotkey: pState.hotkey, fnWasDown: pState.fnWasDown,
                                   modifierWasDown: pState.modifierWasDown, keyWasDown: pState.keyWasDown,
                                   lastTapUpTime: pState.lastTapUpTime, tapCount: pState.tapCount)
-            let (keyDown, keyUp) = processKeyEvent(event, hotkey: pState.hotkey, state: &state)
+            let (keyDown, keyUp, isMatch) = processKeyEvent(event, hotkey: pState.hotkey, state: &state)
             pState.fnWasDown = state.fnWasDown
             pState.modifierWasDown = state.modifierWasDown
             pState.keyWasDown = state.keyWasDown
             pState.lastTapUpTime = state.lastTapUpTime
             pState.tapCount = state.tapCount
             profileSlots[profileId] = pState
+            if isMatch { shouldSuppress = true }
             if keyDown {
-                shouldSuppress = true
                 Task { @MainActor [weak self] in self?.handleProfileKeyDown(profileId: profileId) }
             } else if keyUp {
-                shouldSuppress = true
                 Task { @MainActor [weak self] in self?.handleProfileKeyUp(profileId: profileId) }
             }
         }
@@ -416,7 +414,7 @@ final class HotkeyService: ObservableObject {
         // Global slots
         for slotType in HotkeySlotType.allCases {
             guard var state = slots[slotType], let hotkey = state.hotkey else { continue }
-            let (keyDown, keyUp) = processKeyEvent(event, hotkey: hotkey, state: &state)
+            let (keyDown, keyUp, _) = processKeyEvent(event, hotkey: hotkey, state: &state)
             slots[slotType] = state
             if keyDown { handleKeyDown(slotType: slotType) }
             else if keyUp { handleKeyUp(slotType: slotType) }
@@ -428,7 +426,7 @@ final class HotkeyService: ObservableObject {
             var state = SlotState(hotkey: pState.hotkey, fnWasDown: pState.fnWasDown,
                                   modifierWasDown: pState.modifierWasDown, keyWasDown: pState.keyWasDown,
                                   lastTapUpTime: pState.lastTapUpTime, tapCount: pState.tapCount)
-            let (keyDown, keyUp) = processKeyEvent(event, hotkey: pState.hotkey, state: &state)
+            let (keyDown, keyUp, _) = processKeyEvent(event, hotkey: pState.hotkey, state: &state)
             pState.fnWasDown = state.fnWasDown
             pState.modifierWasDown = state.modifierWasDown
             pState.keyWasDown = state.keyWasDown
@@ -440,16 +438,31 @@ final class HotkeyService: ObservableObject {
         }
     }
 
+    private enum KeyEventResult {
+        case none
+        case down
+        case up
+        case repeatDown
+        case modifierRelease // Modifiers no longer match, but key is still physically down
+    }
+
     /// Processes a key event against a hotkey, updating state booleans.
-    /// Returns (keyDown, keyUp) flags.
-    private func processKeyEvent(_ event: NSEvent, hotkey: UnifiedHotkey, state: inout SlotState) -> (keyDown: Bool, keyUp: Bool) {
-        let (rawKeyDown, rawKeyUp) = detectKeyEvent(
+    /// Returns (keyDown, keyUp, shouldSuppress) flags.
+    private func processKeyEvent(_ event: NSEvent, hotkey: UnifiedHotkey, state: inout SlotState) -> (keyDown: Bool, keyUp: Bool, shouldSuppress: Bool) {
+        let result = detectKeyEvent(
             event, hotkey: hotkey,
             fnWasDown: state.fnWasDown,
             modifierWasDown: state.modifierWasDown,
             keyWasDown: state.keyWasDown
         )
-        let value = rawKeyDown ? true : rawKeyUp ? false : nil
+
+        let value: Bool?
+        switch result {
+        case .down, .repeatDown, .modifierRelease: value = true
+        case .up: value = false
+        case .none: value = nil
+        }
+
         if let value {
             switch hotkey.kind {
             case .fn: state.fnWasDown = value
@@ -458,9 +471,13 @@ final class HotkeyService: ObservableObject {
             }
         }
 
+        let rawKeyDown = result == .down
+        let rawKeyUp = result == .up || result == .modifierRelease
+        let isMatch = result != .none
+
         // For non-double-tap hotkeys, pass through directly
         guard hotkey.isDoubleTap else {
-            return (rawKeyDown, rawKeyUp)
+            return (rawKeyDown, rawKeyUp, isMatch)
         }
 
         // Double-tap state machine: layer on top of single-tap detection
@@ -471,85 +488,108 @@ final class HotkeyService: ObservableObject {
                 // Second tap within threshold - fire
                 state.tapCount = 2
                 state.lastTapUpTime = nil
-                return (true, false)
+                return (true, false, true)
             } else {
                 // First tap (or threshold expired) - don't fire yet
                 state.tapCount = 0
                 state.lastTapUpTime = nil
-                return (false, false)
+                return (false, false, true)
             }
+        }
+
+        if result == .repeatDown {
+            // Suppress repeats if we are in the middle of a double-tap or it's already active
+            return (false, false, true)
         }
 
         if rawKeyUp {
             if state.tapCount == 2 {
                 // Release after second tap - real keyUp
                 state.tapCount = 0
-                return (false, true)
+                return (false, true, true)
             } else {
                 // Release after first tap - start waiting for second
                 state.tapCount = 1
                 state.lastTapUpTime = Date()
-                return (false, false)
+                return (false, false, true)
             }
         }
 
-        return (false, false)
+        return (false, false, false)
     }
 
-    /// Generic key event detection: returns (isKeyDown, isKeyUp) for a given hotkey configuration.
+    /// Generic key event detection: returns a KeyEventResult for a given hotkey configuration.
     private func detectKeyEvent(
         _ event: NSEvent,
         hotkey: UnifiedHotkey,
         fnWasDown: Bool,
         modifierWasDown: Bool,
         keyWasDown: Bool
-    ) -> (keyDown: Bool, keyUp: Bool) {
+    ) -> KeyEventResult {
         switch hotkey.kind {
         case .fn:
-            guard event.type == .flagsChanged else { return (false, false) }
+            guard event.type == .flagsChanged else { return .none }
             let fnDown = event.modifierFlags.contains(.function)
-            if fnDown, !fnWasDown { return (true, false) }
-            if !fnDown, fnWasDown { return (false, true) }
+            if fnDown, !fnWasDown { return .down }
+            if !fnDown, fnWasDown { return .up }
+            if fnDown, fnWasDown { return .repeatDown }
 
         case .modifierOnly:
-            guard event.type == .flagsChanged, event.keyCode == hotkey.keyCode else { return (false, false) }
+            guard event.type == .flagsChanged, event.keyCode == hotkey.keyCode else { return .none }
             let flag = Self.modifierFlagForKeyCode(hotkey.keyCode)
-            guard let flag else { return (false, false) }
+            guard let flag else { return .none }
             let isDown = event.modifierFlags.contains(flag)
-            if isDown, !modifierWasDown { return (true, false) }
-            if !isDown, modifierWasDown { return (false, true) }
+            if isDown, !modifierWasDown { return .down }
+            if !isDown, modifierWasDown { return .up }
+            if isDown, modifierWasDown { return .repeatDown }
 
         case .modifierCombo:
-            guard event.type == .flagsChanged else { return (false, false) }
+            guard event.type == .flagsChanged else { return .none }
             let requiredFlags = NSEvent.ModifierFlags(rawValue: hotkey.modifierFlags)
             let relevantMask: NSEvent.ModifierFlags = [.command, .option, .control, .shift, .function]
             let current = event.modifierFlags.intersection(relevantMask)
             let allDown = current.contains(requiredFlags)
-            if allDown, !modifierWasDown { return (true, false) }
-            if !allDown, modifierWasDown { return (false, true) }
+            if allDown, !modifierWasDown { return .down }
+            if !allDown, modifierWasDown {
+                // If the sentinel keyCode (0xFFFF) is used, we have no physical key to track.
+                // Otherwise, we'd need to track which modifiers are still down.
+                // For now, modifier-only combos don't have a 'base key'.
+                return .up
+            }
+            if allDown, modifierWasDown { return .repeatDown }
 
         case .keyWithModifiers:
             let requiredFlags = NSEvent.ModifierFlags(rawValue: hotkey.modifierFlags)
             let relevantMask: NSEvent.ModifierFlags = [.command, .option, .control, .shift, .function]
             let currentRelevant = event.modifierFlags.intersection(relevantMask)
 
-            if event.type == .keyDown, event.keyCode == hotkey.keyCode, !keyWasDown {
-                if currentRelevant == requiredFlags { return (true, false) }
-            } else if event.type == .keyUp, event.keyCode == hotkey.keyCode, keyWasDown {
-                return (false, true)
-            } else if event.type == .flagsChanged, keyWasDown, !currentRelevant.contains(requiredFlags) {
-                return (false, true)
+            if event.type == .keyDown, event.keyCode == hotkey.keyCode {
+                if currentRelevant == requiredFlags {
+                    return keyWasDown ? .repeatDown : .down
+                } else if keyWasDown {
+                    return .repeatDown // Modifiers released but key held -> still ours
+                }
+            } else if event.type == .keyUp, event.keyCode == hotkey.keyCode {
+                if keyWasDown { return .up }
+            } else if event.type == .flagsChanged, keyWasDown {
+                if !currentRelevant.contains(requiredFlags) {
+                    return .modifierRelease
+                }
             }
 
         case .bareKey:
-            guard event.keyCode == hotkey.keyCode else { return (false, false) }
+            guard event.keyCode == hotkey.keyCode else { return .none }
             let ignoredModifiers: NSEvent.ModifierFlags = [.command, .option, .control]
-            if !event.modifierFlags.intersection(ignoredModifiers).isEmpty { return (false, false) }
+            if !event.modifierFlags.intersection(ignoredModifiers).isEmpty { return .none }
 
-            if event.type == .keyDown, !keyWasDown { return (true, false) }
-            if event.type == .keyUp { return (false, true) }
+            if event.type == .keyDown {
+                return keyWasDown ? .repeatDown : .down
+            }
+            if event.type == .keyUp {
+                return .up
+            }
         }
-        return (false, false)
+        return .none
     }
 
     // MARK: - Key Down / Up (Global Slots)
