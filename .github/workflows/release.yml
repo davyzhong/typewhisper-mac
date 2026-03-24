@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - 'v*'
+      - '!v*-daily*'
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
 
 env:
   SCHEME: TypeWhisper
@@ -14,8 +18,58 @@ permissions:
   pages: write
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      should_run: ${{ steps.resolve.outputs.should_run }}
+    steps:
+      - name: Checkout
+        if: github.event_name != 'push'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release tag
+        id: resolve
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            # Schedule or manual trigger - resolve the daily tag name
+            # Tag format must match the exclusion pattern in push.tags above.
+            # Do not create the tag here: a failed downstream job would otherwise
+            # leave HEAD tagged and block all future retries for the same commit.
+            VERSION=$(sed -n 's/.*MARKETING_VERSION = \([0-9.]*\);.*/\1/p' TypeWhisper.xcodeproj/project.pbxproj | head -1)
+            DATE=$(date -u +%Y%m%d)
+            TAG="v${VERSION}-daily.${DATE}"
+
+            # Skip if HEAD already has an app release tag.
+            EXISTING_TAGS=$(git tag --points-at HEAD | grep '^v[0-9]' || true)
+            if [ -n "$EXISTING_TAGS" ]; then
+              echo "HEAD already has app release tags: $EXISTING_TAGS - skipping daily"
+              echo "should_run=false" >> $GITHUB_OUTPUT
+              echo "tag=" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            # Skip if this daily tag already exists
+            if git rev-parse "$TAG" >/dev/null 2>&1; then
+              echo "Tag $TAG already exists - skipping"
+              echo "should_run=false" >> $GITHUB_OUTPUT
+              echo "tag=" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            echo "Planned daily tag: $TAG"
+          fi
+
   verify-release-build:
-    if: "!startsWith(github.ref_name, 'plugin-')"
+    needs: [prepare]
+    if: needs.prepare.outputs.should_run == 'true'
     runs-on: macos-15
     steps:
       - name: Checkout
@@ -48,7 +102,8 @@ jobs:
         run: bash scripts/check_first_party_warnings.sh verify-build.log
 
   app-tests:
-    if: "!startsWith(github.ref_name, 'plugin-')"
+    needs: [prepare]
+    if: needs.prepare.outputs.should_run == 'true'
     runs-on: macos-15
     steps:
       - name: Checkout
@@ -80,7 +135,8 @@ jobs:
         run: bash scripts/check_first_party_warnings.sh test.log
 
   plugin-sdk-tests:
-    if: "!startsWith(github.ref_name, 'plugin-')"
+    needs: [prepare]
+    if: needs.prepare.outputs.should_run == 'true'
     runs-on: macos-15
     steps:
       - name: Checkout
@@ -90,12 +146,15 @@ jobs:
         run: swift test --package-path TypeWhisperPluginSDK
 
   build:
-    if: "!startsWith(github.ref_name, 'plugin-')"
     needs:
+      - prepare
       - verify-release-build
       - app-tests
       - plugin-sdk-tests
+    if: needs.prepare.outputs.should_run == 'true'
     runs-on: macos-15
+    env:
+      RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -136,7 +195,7 @@ jobs:
 
       - name: Build App
         run: |
-          RAW_VERSION="${GITHUB_REF_NAME#v}"
+          RAW_VERSION="${RELEASE_TAG#v}"
           VERSION="${RAW_VERSION%%-*}"
           BUILD_NUMBER=$(git rev-list --count HEAD)
           echo "Building version: $VERSION (build $BUILD_NUMBER)"
@@ -226,7 +285,7 @@ jobs:
 
       - name: Create DMG
         run: |
-          TAG="${{ github.ref_name }}"
+          TAG="$RELEASE_TAG"
           APP_NAME="TypeWhisper"
           DMG_NAME="TypeWhisper-${TAG}.dmg"
           APP_PATH="build/Build/Products/Release/TypeWhisper.app"
@@ -251,7 +310,7 @@ jobs:
             chmod 600 /tmp/AuthKey.p8
           fi
 
-          DMG_PATH="build/Build/Products/Release/TypeWhisper-${{ github.ref_name }}.dmg"
+          DMG_PATH="build/Build/Products/Release/TypeWhisper-${RELEASE_TAG}.dmg"
           xcrun notarytool submit "$DMG_PATH" \
             --key /tmp/AuthKey.p8 \
             --key-id "$APPLE_API_KEY_ID" \
@@ -263,7 +322,7 @@ jobs:
       - name: Create ZIP
         run: |
           cd build/Build/Products/Release
-          ditto -c -k --keepParent TypeWhisper.app TypeWhisper-${{ github.ref_name }}.zip
+          ditto -c -k --keepParent TypeWhisper.app "TypeWhisper-${RELEASE_TAG}.zip"
 
       - name: Cleanup Signing Assets
         if: always()
@@ -277,7 +336,7 @@ jobs:
         env:
           SPARKLE_EDDSA_KEY: ${{ secrets.SPARKLE_EDDSA_KEY }}
         run: |
-          TAG="${{ github.ref_name }}"
+          TAG="$RELEASE_TAG"
           ZIP_PATH="build/Build/Products/Release/TypeWhisper-${TAG}.zip"
 
           # Download Sparkle CLI tools
@@ -298,7 +357,7 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          TAG="${{ github.ref_name }}"
+          TAG="$RELEASE_TAG"
           ASSET_DMG="build/Build/Products/Release/TypeWhisper-${TAG}.dmg"
           ASSET_ZIP="build/Build/Products/Release/TypeWhisper-${TAG}.zip"
 
@@ -322,13 +381,26 @@ jobs:
           else
             echo "No existing release. Generating notes from commits..."
 
-            # Find previous tag
-            PREV_TAG=$(git tag --sort=-v:refname | sed -n '2p')
+            if [ "$RELEASE_CHANNEL" = "stable" ]; then
+              # Stable notes should compare against the previous stable release,
+              # not against an RC or daily tag that may point at the same commit.
+              PREV_TAG=$(git tag --sort=-v:refname | grep '^v[0-9][0-9.]*$' | grep -v "^${TAG}$" | head -1)
+            else
+              # Pre-release notes can compare against the latest app tag of any prerelease type.
+              PREV_TAG=$(git tag --sort=-v:refname | grep '^v[0-9]' | grep -v "^${TAG}$" | head -1)
+            fi
+
+            RANGE_END="$TAG"
+            RELEASE_TARGET=""
+            if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+              RANGE_END="$(git rev-parse HEAD)"
+              RELEASE_TARGET="$RANGE_END"
+            fi
 
             if [ -n "$PREV_TAG" ]; then
-              RANGE="${PREV_TAG}..${TAG}"
+              RANGE="${PREV_TAG}..${RANGE_END}"
             else
-              RANGE="$TAG"
+              RANGE="$RANGE_END"
             fi
 
             # Parse commits into categories
@@ -377,16 +449,22 @@ jobs:
               NOTES="Maintenance release ${TAG}"
             fi
 
+            CREATE_ARGS=(
+              "$TAG"
+              "$ASSET_DMG"
+              "$ASSET_ZIP"
+              --title "$TAG"
+              --notes "$(printf '%b' "$NOTES")"
+            )
+
             if [ "$IS_PRERELEASE" = "true" ]; then
-              gh release create "$TAG" "$ASSET_DMG" "$ASSET_ZIP" \
-                --title "$TAG" \
-                --notes "$(printf '%b' "$NOTES")" \
-                --prerelease
-            else
-              gh release create "$TAG" "$ASSET_DMG" "$ASSET_ZIP" \
-                --title "$TAG" \
-                --notes "$(printf '%b' "$NOTES")"
+              CREATE_ARGS+=(--prerelease)
             fi
+            if [ -n "$RELEASE_TARGET" ]; then
+              CREATE_ARGS+=(--target "$RELEASE_TARGET")
+            fi
+
+            gh release create "${CREATE_ARGS[@]}"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -395,7 +473,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="${{ github.ref_name }}"
+          TAG="$RELEASE_TAG"
           DOWNLOAD_URL="https://github.com/TypeWhisper/typewhisper-mac/releases/download/${TAG}/TypeWhisper-${TAG}.zip"
           PUB_DATE=$(date -u +"%a, %d %b %Y %H:%M:%S %z")
 
@@ -443,8 +521,8 @@ jobs:
           git push origin gh-pages
 
   trigger-website:
-    if: "!contains(github.ref_name, '-')"
-    needs: build
+    if: "!contains(needs.prepare.outputs.tag, '-')"
+    needs: [prepare, build]
     runs-on: ubuntu-latest
     steps:
       - name: Trigger website rebuild
@@ -455,15 +533,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WEBSITE_DEPLOY_TOKEN }}
 
   update-homebrew:
-    if: "!contains(github.ref_name, '-')"
-    needs: build
+    if: "!contains(needs.prepare.outputs.tag, '-')"
+    needs: [prepare, build]
     runs-on: ubuntu-latest
     steps:
       - name: Update Homebrew Cask
         env:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${{ needs.prepare.outputs.tag }}"
           VERSION="${TAG#v}"
           DMG_URL="https://github.com/TypeWhisper/typewhisper-mac/releases/download/${TAG}/TypeWhisper-${TAG}.dmg"
 
