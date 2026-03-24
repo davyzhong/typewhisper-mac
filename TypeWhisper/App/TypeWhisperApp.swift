@@ -17,25 +17,24 @@ extension Notification.Name {
 
 struct TypeWhisperApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var serviceContainer = ServiceContainer.shared
     @AppStorage(UserDefaultsKeys.showMenuBarIcon) private var showMenuBarIcon = true
 
     var body: some Scene {
         MenuBarExtra(AppConstants.isDevelopment ? "TypeWhisper Dev" : "TypeWhisper", systemImage: "waveform", isInserted: $showMenuBarIcon) {
-            MenuBarView()
+            menuBarContent
         }
         .menuBarExtraStyle(.menu)
 
         settingsScene
 
         Window(String(localized: "History"), id: "history") {
-            HistoryView()
+            historyContent
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 900, height: 500)
 
         Window(String(localized: "Error Log"), id: "errors") {
-            ErrorLogView()
+            errorLogContent
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 500, height: 400)
@@ -43,14 +42,52 @@ struct TypeWhisperApp: App {
 
     private var settingsScene: some Scene {
         Window(String(localized: "Settings"), id: "settings") {
-            SettingsView()
-                .background(SettingsWindowBridge())
+            settingsContent
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 1050, height: 600)
     }
 
+    @ViewBuilder
+    private var menuBarContent: some View {
+        if AppConstants.isRunningTests {
+            EmptyView()
+        } else {
+            MenuBarView()
+        }
+    }
+
+    @ViewBuilder
+    private var settingsContent: some View {
+        if AppConstants.isRunningTests {
+            EmptyView()
+        } else {
+            SettingsView()
+                .background(SettingsWindowBridge())
+        }
+    }
+
+    @ViewBuilder
+    private var historyContent: some View {
+        if AppConstants.isRunningTests {
+            EmptyView()
+        } else {
+            HistoryView()
+        }
+    }
+
+    @ViewBuilder
+    private var errorLogContent: some View {
+        if AppConstants.isRunningTests {
+            EmptyView()
+        } else {
+            ErrorLogView()
+        }
+    }
+
     init() {
+        guard !AppConstants.isRunningTests else { return }
+
         // Trigger ServiceContainer initialization
         _ = ServiceContainer.shared
 
@@ -94,12 +131,13 @@ final class SettingsWindowOpener {
 
 // MARK: - App Delegate
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
     private var indicatorCoordinator: IndicatorCoordinator?
     private var translationHostWindow: NSWindow?
     private var menuBarIconObserver: NSKeyValueObservation?
     #if !APPSTORE
-    private lazy var updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    private lazy var updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: self, userDriverDelegate: nil)
 
     var updateChecker: UpdateChecker {
         .sparkle(updaterController.updater)
@@ -112,8 +150,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         UserDefaults.standard.register(defaults: [
-            UserDefaultsKeys.showMenuBarIcon: true
+            UserDefaultsKeys.showMenuBarIcon: true,
+            UserDefaultsKeys.updateChannel: AppConstants.defaultReleaseChannel.rawValue
         ])
+
+        guard !AppConstants.isRunningTests else {
+            return
+        }
+
         #if !APPSTORE
         UpdateChecker.shared = updateChecker
         #endif
@@ -161,7 +205,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menuBarIconObserver = UserDefaults.standard.observe(
             \.showMenuBarIcon, options: [.new]
         ) { [weak self] _, change in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 let hidden = change.newValue == false
                 if hidden {
                     NSApp.setActivationPolicy(.regular)
@@ -193,7 +237,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
-    @MainActor private func openSettingsWindow() {
+    private func openSettingsWindow() {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate()
 
@@ -215,22 +259,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.post(name: .openSettingsFromDock, object: nil)
     }
 
-    @MainActor private func isManagedWindow(_ window: NSWindow) -> Bool {
+    private func isManagedWindow(_ window: NSWindow) -> Bool {
         guard let id = window.identifier?.rawValue else { return false }
         return id.localizedCaseInsensitiveContains("settings")
             || id.localizedCaseInsensitiveContains("history")
             || id.localizedCaseInsensitiveContains("errors")
     }
 
-    @MainActor private var hasVisibleManagedWindow: Bool {
+    private var hasVisibleManagedWindow: Bool {
         NSApp.windows.contains { isManagedWindow($0) && $0.isVisible }
     }
 
-    @MainActor private var shouldRevertToAccessory: Bool {
+    private var shouldRevertToAccessory: Bool {
         !isMenuBarIconHidden && !hasVisibleManagedWindow
     }
 
-    @MainActor @objc private func windowDidBecomeKey(_ notification: Notification) {
+    @objc private func windowDidBecomeKey(_ notification: Notification) {
         guard let window = notification.object as? NSWindow,
               isManagedWindow(window),
               window.isVisible
@@ -239,15 +283,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate()
     }
 
-    @MainActor @objc private func windowWillClose(_ notification: Notification) {
+    @objc private func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow,
               isManagedWindow(window)
         else { return }
         // Only go back to accessory if menu bar icon is visible and no other managed window is open
-        DispatchQueue.main.async {
-            if self.shouldRevertToAccessory {
+        DispatchQueue.main.async { [weak self] in
+            if self?.shouldRevertToAccessory == true {
                 NSApp.setActivationPolicy(.accessory)
             }
         }
     }
+
+    #if !APPSTORE
+    nonisolated func allowedChannels(for updater: SPUUpdater) -> Set<String> {
+        AppConstants.effectiveUpdateChannel.sparkleChannels
+    }
+    #endif
 }

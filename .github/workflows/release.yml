@@ -14,8 +14,87 @@ permissions:
   pages: write
 
 jobs:
+  verify-release-build:
+    if: "!startsWith(github.ref_name, 'plugin-')"
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.2"
+
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project $PROJECT \
+            -scheme $SCHEME
+
+      - name: Verify Release Build
+        run: |
+          set -o pipefail
+          xcodebuild -project $PROJECT \
+            -scheme $SCHEME \
+            -configuration Release \
+            -derivedDataPath verify-build \
+            -destination 'generic/platform=macOS' \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO | tee verify-build.log
+
+      - name: Check First-Party Warnings
+        run: bash scripts/check_first_party_warnings.sh verify-build.log
+
+  app-tests:
+    if: "!startsWith(github.ref_name, 'plugin-')"
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.2"
+
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project $PROJECT \
+            -scheme $SCHEME
+
+      - name: Run App Tests
+        run: |
+          set -o pipefail
+          xcodebuild test -project $PROJECT \
+            -scheme $SCHEME \
+            -destination 'platform=macOS,arch=arm64' \
+            -parallel-testing-enabled NO \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO | tee test.log
+
+      - name: Check First-Party Warnings
+        run: bash scripts/check_first_party_warnings.sh test.log
+
+  plugin-sdk-tests:
+    if: "!startsWith(github.ref_name, 'plugin-')"
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run Plugin SDK Tests
+        run: swift test --package-path TypeWhisperPluginSDK
+
   build:
     if: "!startsWith(github.ref_name, 'plugin-')"
+    needs:
+      - verify-release-build
+      - app-tests
+      - plugin-sdk-tests
     runs-on: macos-15
     steps:
       - name: Checkout
@@ -57,12 +136,26 @@ jobs:
 
       - name: Build App
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          VERSION="${VERSION%%-*}"
+          RAW_VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${RAW_VERSION%%-*}"
           BUILD_NUMBER=$(git rev-list --count HEAD)
           echo "Building version: $VERSION (build $BUILD_NUMBER)"
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+          echo "DISPLAY_VERSION=$RAW_VERSION" >> $GITHUB_ENV
 
+          RELEASE_CHANNEL="stable"
+          IS_PRERELEASE="false"
+          if [[ "$RAW_VERSION" == *"-daily"* ]]; then
+            RELEASE_CHANNEL="daily"
+            IS_PRERELEASE="true"
+          elif [[ "$RAW_VERSION" == *-* ]]; then
+            RELEASE_CHANNEL="release-candidate"
+            IS_PRERELEASE="true"
+          fi
+          echo "RELEASE_CHANNEL=$RELEASE_CHANNEL" >> $GITHUB_ENV
+          echo "IS_PRERELEASE=$IS_PRERELEASE" >> $GITHUB_ENV
+
+          set -o pipefail
           xcodebuild -project $PROJECT \
             -scheme $SCHEME \
             -configuration Release \
@@ -73,7 +166,15 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             DEVELOPMENT_TEAM=2D8ALY3LCL \
             MARKETING_VERSION="$VERSION" \
-            CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" | tee build.log
+
+      - name: Check First-Party Warnings
+        run: bash scripts/check_first_party_warnings.sh build.log
+
+      - name: Configure Release Channel
+        run: |
+          APP_INFO_PLIST="build/Build/Products/Release/TypeWhisper.app/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :TypeWhisperReleaseChannel ${RELEASE_CHANNEL}" "$APP_INFO_PLIST"
 
       - name: Sign App (Developer ID)
         env:
@@ -207,10 +308,17 @@ jobs:
           if [ "$EXISTING_DRAFT" = "true" ]; then
             echo "Draft release found for $TAG. Uploading assets and publishing..."
             gh release upload "$TAG" "$ASSET_DMG" "$ASSET_ZIP" --clobber
-            gh release edit "$TAG" --draft=false
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              gh release edit "$TAG" --draft=false --prerelease
+            else
+              gh release edit "$TAG" --draft=false
+            fi
           elif [ "$EXISTING_DRAFT" = "false" ]; then
             echo "Published release found for $TAG. Uploading assets..."
             gh release upload "$TAG" "$ASSET_DMG" "$ASSET_ZIP" --clobber
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              gh release edit "$TAG" --prerelease
+            fi
           else
             echo "No existing release. Generating notes from commits..."
 
@@ -269,19 +377,25 @@ jobs:
               NOTES="Maintenance release ${TAG}"
             fi
 
-            gh release create "$TAG" "$ASSET_DMG" "$ASSET_ZIP" \
-              --title "$TAG" \
-              --notes "$(printf '%b' "$NOTES")"
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              gh release create "$TAG" "$ASSET_DMG" "$ASSET_ZIP" \
+                --title "$TAG" \
+                --notes "$(printf '%b' "$NOTES")" \
+                --prerelease
+            else
+              gh release create "$TAG" "$ASSET_DMG" "$ASSET_ZIP" \
+                --title "$TAG" \
+                --notes "$(printf '%b' "$NOTES")"
+            fi
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate and Deploy Appcast
+      - name: Generate and Deploy Sparkle Appcast
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.ref_name }}"
-          VERSION="${TAG#v}"
           DOWNLOAD_URL="https://github.com/TypeWhisper/typewhisper-mac/releases/download/${TAG}/TypeWhisper-${TAG}.zip"
           PUB_DATE=$(date -u +"%a, %d %b %Y %H:%M:%S %z")
 
@@ -294,24 +408,6 @@ jobs:
           if [ -z "$ED_LENGTH" ]; then
             ED_LENGTH="$ZIP_SIZE"
           fi
-
-          cat > /tmp/appcast.xml <<APPCAST_EOF
-          <?xml version="1.0" encoding="utf-8"?>
-          <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
-            <channel>
-              <title>TypeWhisper Updates</title>
-              <language>en</language>
-              <item>
-                <title>Version ${VERSION}</title>
-                <pubDate>${PUB_DATE}</pubDate>
-                <sparkle:version>${BUILD_NUMBER}</sparkle:version>
-                <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
-                <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-                <enclosure url="${DOWNLOAD_URL}" sparkle:edSignature="${ED_SIGNATURE}" length="${ED_LENGTH}" type="application/octet-stream"/>
-              </item>
-            </channel>
-          </rss>
-          APPCAST_EOF
 
           # Deploy to gh-pages branch
           cd "$GITHUB_WORKSPACE"
@@ -327,7 +423,18 @@ jobs:
             cd "$GITHUB_WORKSPACE"
           fi
 
-          cp /tmp/appcast.xml /tmp/gh-pages/appcast.xml
+          python3 scripts/update_appcast.py \
+            --appcast /tmp/gh-pages/appcast.xml \
+            --channel "$RELEASE_CHANNEL" \
+            --title "Version ${DISPLAY_VERSION}" \
+            --version "$DISPLAY_VERSION" \
+            --build-version "$BUILD_NUMBER" \
+            --pub-date "$PUB_DATE" \
+            --url "$DOWNLOAD_URL" \
+            --signature "$ED_SIGNATURE" \
+            --length "$ED_LENGTH" \
+            --minimum-system-version "15.0"
+
           cd /tmp/gh-pages
           git add appcast.xml
           git config user.name "github-actions[bot]"
@@ -336,6 +443,7 @@ jobs:
           git push origin gh-pages
 
   trigger-website:
+    if: "!contains(github.ref_name, '-')"
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -347,6 +455,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WEBSITE_DEPLOY_TOKEN }}
 
   update-homebrew:
+    if: "!contains(github.ref_name, '-')"
     needs: build
     runs-on: ubuntu-latest
     steps:
