@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Post-process transcribed text through custom shell scripts. Pass text via stdin, get results via stdout.",
     "descriptions": {
-        "de": "Transkribierten Text durch eigene Shell-Skripte nachbearbeiten. Text wird per stdin uebergeben, Ergebnis per stdout zurueckgegeben.",
         "zh-Hans": "通过自定义 Shell 脚本对转录文本进行后处理，通过 stdin 传入文本，stdout 读取结果。"
     },
     "category": "post-processor",

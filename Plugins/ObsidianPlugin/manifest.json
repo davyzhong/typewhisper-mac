@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Save transcriptions to your Obsidian vault as Markdown notes. Supports daily notes, frontmatter, and auto-export.",
     "descriptions": {
-        "de": "Transkriptionen als Markdown-Notizen in deinem Obsidian-Vault speichern. Unterstuetzt Tagesnotizen, Frontmatter und Auto-Export.",
         "zh-Hans": "将转录内容以 Markdown 笔记形式保存到 Obsidian 库，支持每日笔记和元数据。"
     },
     "category": "action",

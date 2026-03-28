@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Ultra-fast LLM inference via Cerebras API. Up to 3,000 tokens/sec. Requires API key.",
     "descriptions": {
-        "de": "Ultra-schnelle LLM-Inferenz ueber die Cerebras-API. Bis zu 3.000 Tokens/Sek. Erfordert API-Key.",
         "zh-Hans": "通过 Cerebras API 提供超快速 LLM 推理，最高可达 3000 tokens/秒，需 API 密钥。"
     },
     "category": "llm",

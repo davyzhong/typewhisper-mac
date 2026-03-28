@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Send transcribed or processed text to any webhook URL via HTTP POST.",
     "descriptions": {
-        "de": "Transkribierten oder verarbeiteten Text per HTTP POST an eine beliebige Webhook-URL senden.",
         "zh-Hans": "通过 HTTP POST 将转录或处理后的文本发送至任意 Webhook URL。"
     },
     "category": "post-processor",

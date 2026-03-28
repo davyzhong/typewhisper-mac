@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Cloud transcription and LLM via Groq API. Fast inference, requires API key.",
     "descriptions": {
-        "de": "Cloud-Transkription und LLM ueber die Groq-API. Schnelle Inferenz, erfordert API-Key.",
         "zh-Hans": "通过 Groq API 进行云端转录和 LLM，推理速度快，需 API 密钥。"
     },
     "category": "transcription",

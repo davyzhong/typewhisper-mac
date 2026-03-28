@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Local speech-to-text powered by Voxtral MLX on Apple Silicon. Fast and accurate.",
     "descriptions": {
-        "de": "Lokale Spracherkennung mit Voxtral MLX auf Apple Silicon. Schnell und praezise.",
         "zh-Hans": "由 Mistral Voxtral MLX 提供本地语音转文字，快速精准，支持 15 种语言。"
     },
     "category": "transcription",

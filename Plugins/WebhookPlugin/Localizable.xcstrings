@@ -3,12 +3,6 @@
   "strings": {
     "Active for all transcriptions.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktiv für alle Transkriptionen."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Add a webhook to send transcription data to external services.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Füge einen Webhook hinzu, um Transkriptionsdaten an externe Dienste zu senden."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Add Webhook": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Webhook hinzufügen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "Cancel": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abbrechen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Delivery Log": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zustellprotokoll"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Done": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fertig"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Edit Webhook": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Webhook bearbeiten"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -115,12 +73,6 @@
     },
     "General": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allgemein"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -131,12 +83,6 @@
     },
     "Method": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Methode"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -147,12 +93,6 @@
     },
     "Name": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Name"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -163,12 +103,6 @@
     },
     "No profiles configured.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine Profile konfiguriert."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -179,12 +113,6 @@
     },
     "No Webhooks": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine Webhooks"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -195,12 +123,6 @@
     },
     "Only active for selected profiles.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nur aktiv für ausgewählte Profile."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -211,12 +133,6 @@
     },
     "Profiles": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Profile"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -227,12 +143,6 @@
     },
     "Save": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sichern"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -243,12 +153,6 @@
     },
     "URL": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "URL"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -259,12 +163,6 @@
     },
     "Webhook Notifications": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Webhook-Benachrichtigungen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

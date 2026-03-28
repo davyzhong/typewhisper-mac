@@ -3,12 +3,6 @@
   "strings": {
     "Download & Load": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Laden & Aktivieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Local speech-to-text and translation by IBM, powered by MLX on Apple Silicon. 6 languages with bidirectional translation.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lokale Spracherkennung und Uebersetzung von IBM mit MLX auf Apple Silicon. 6 Sprachen mit bidirektionaler Uebersetzung."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Model": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modell"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "Unload": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deaktivieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

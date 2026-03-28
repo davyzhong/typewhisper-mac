@@ -3,12 +3,6 @@
   "strings": {
     "Add metadata (date, app, language, tags) to each note.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Metadaten (Datum, App, Sprache, Tags) zu jeder Notiz hinzufügen."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Append all transcriptions to a single daily file instead of creating individual notes.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alle Transkriptionen an eine einzelne Tagesdatei anhängen, statt einzelne Notizen zu erstellen."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Auto-Export": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auto-Export"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "Automatically save every transcription to Obsidian.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jede Transkription automatisch in Obsidian speichern."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Browse...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Durchsuchen ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Copy Prompt": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prompt kopieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Create a new PromptAction with this system prompt and set \"Save to Obsidian\" as the action target:": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erstelle eine neue PromptAction mit diesem Prompt und setze \"Save to Obsidian\" als Aktionsziel:"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -115,12 +73,6 @@
     },
     "Daily Note Mode": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tagesnotiz-Modus"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -131,12 +83,6 @@
     },
     "Detected Vaults": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erkannte Vaults"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -147,12 +93,6 @@
     },
     "File Organization": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dateiorganisation"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -163,12 +103,6 @@
     },
     "Filename:": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dateiname:"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -179,12 +113,6 @@
     },
     "No vault selected": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein Vault ausgewählt"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -195,12 +123,6 @@
     },
     "Placeholders: {{DATE}}, {{TIME}}, {{APP}}, {{LANG}}": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Platzhalter: {{DATE}}, {{TIME}}, {{APP}}, {{LANG}}"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -211,12 +133,6 @@
     },
     "Preview: %@.md": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vorschau: %@.md"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -227,12 +143,6 @@
     },
     "Recommended Prompt": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Empfohlener Prompt"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -243,12 +153,6 @@
     },
     "Select vault...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vault auswählen ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -259,12 +163,6 @@
     },
     "Select your Obsidian vault folder": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle deinen Obsidian-Vault-Ordner"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -275,12 +173,6 @@
     },
     "Subfolder:": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unterordner:"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -291,12 +183,6 @@
     },
     "Tags:": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tags:"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -307,12 +193,6 @@
     },
     "Vault": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vault"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -323,12 +203,6 @@
     },
     "YAML Frontmatter": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "YAML-Frontmatter"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

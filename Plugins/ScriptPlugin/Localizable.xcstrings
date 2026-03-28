@@ -3,12 +3,6 @@
   "strings": {
     "Active for all transcriptions.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktiv für alle Transkriptionen."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Add a script to process transcribed text via shell commands.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Füge ein Skript hinzu, um transkribierten Text per Shell-Befehl zu verarbeiten."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Add Example": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beispiel hinzufügen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "Add Script": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skript hinzufügen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Cancel": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abbrechen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Command": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Befehl"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Done": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fertig"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -115,12 +73,6 @@
     },
     "Edit Script": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skript bearbeiten"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -131,12 +83,6 @@
     },
     "Execution Log": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ausführungsprotokoll"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -147,12 +93,6 @@
     },
     "General": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allgemein"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -163,12 +103,6 @@
     },
     "Name": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Name"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -179,12 +113,6 @@
     },
     "No profiles configured.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine Profile konfiguriert."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -195,12 +123,6 @@
     },
     "No Scripts": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine Skripte"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -211,12 +133,6 @@
     },
     "Only active for selected profiles.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nur aktiv für ausgewählte Profile."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -227,12 +143,6 @@
     },
     "Profiles": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Profile"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -243,12 +153,6 @@
     },
     "Save": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sichern"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -259,12 +163,6 @@
     },
     "Script Runner": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skript-Runner"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -275,12 +173,6 @@
     },
     "Text is passed via stdin. Return result via stdout.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Text wird über stdin übergeben. Ergebnis über stdout zurückgeben."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

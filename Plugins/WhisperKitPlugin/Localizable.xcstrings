@@ -3,12 +3,6 @@
   "strings": {
     "Download & Load": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Laden & Aktivieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Loading model...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modell wird geladen ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Loading...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Laden ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "Local speech-to-text using OpenAI Whisper via CoreML. 99+ languages, streaming, translation to English.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lokale Sprache-zu-Text-Erkennung mit OpenAI Whisper via CoreML. 99+ Sprachen, Streaming, Übersetzung ins Englische."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Models": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modelle"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Optimizing for Neural Engine...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Optimierung für Neural Engine ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Recommended": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Empfohlen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -115,12 +73,6 @@
     },
     "Unload": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deaktivieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

@@ -3,12 +3,6 @@
   "strings": {
     "Active: %@": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktiv: %@"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "Downloading language model...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sprachmodell wird heruntergeladen ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Loading available languages...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verfügbare Sprachen werden geladen ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "On-device speech recognition via Apple's Speech framework with streaming support. Select a language model below - only one can be active at a time.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gerätebasierte Spracherkennung über Apples Speech-Framework mit Streaming-Unterstützung. Wähle unten ein Sprachmodell - es kann jeweils nur eines aktiv sein."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Search languages...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sprachen suchen ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Select": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auswählen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Unload": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deaktivieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

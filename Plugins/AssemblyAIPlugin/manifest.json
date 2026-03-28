@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Cloud transcription via AssemblyAI API with real-time WebSocket streaming. Requires API key.",
     "descriptions": {
-        "de": "Cloud-Transkription ueber die AssemblyAI-API mit Echtzeit-WebSocket-Streaming. Erfordert API-Key.",
         "zh-Hans": "通过 AssemblyAI API 进行云端转录，支持实时 WebSocket 流式传输，需 API 密钥。"
     },
     "category": "transcription",

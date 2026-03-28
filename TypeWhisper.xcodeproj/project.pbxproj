@@ -2033,7 +2033,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				de,
 				zh_Hans,
 				Base,
 			);

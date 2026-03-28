@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Cloud transcription and LLM via OpenAI API. Whisper and GPT models, requires API key.",
     "descriptions": {
-        "de": "Cloud-Transkription und LLM ueber die OpenAI-API. Whisper- und GPT-Modelle, erfordert API-Key.",
         "zh-Hans": "通过 OpenAI API 进行云端转录和 LLM，Whisper 和 GPT 模型，需 API 密钥。"
     },
     "category": "transcription",

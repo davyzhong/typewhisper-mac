@@ -3,12 +3,6 @@
   "strings": {
     "API Key": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "API-Schlüssel"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -19,12 +13,6 @@
     },
     "API keys are stored securely in the Keychain": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "API-Schlüssel werden sicher im Schlüsselbund gespeichert"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -35,12 +23,6 @@
     },
     "Invalid API Key": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ungültiger API-Schlüssel"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -51,12 +33,6 @@
     },
     "LLM Model": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LLM-Modell"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -67,12 +43,6 @@
     },
     "Refresh": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktualisieren"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -83,12 +53,6 @@
     },
     "Remove": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entfernen"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -99,12 +63,6 @@
     },
     "Save": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sichern"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -115,12 +73,6 @@
     },
     "Enter any model ID from fireworks.ai/models": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beliebige Model-ID von fireworks.ai/models eingeben"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -131,12 +83,6 @@
     },
     "Use": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verwenden"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -147,12 +93,6 @@
     },
     "Transcription Model": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transkriptionsmodell"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -163,12 +103,6 @@
     },
     "Using default models. Press Refresh to fetch all available models.": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Standardmodelle werden verwendet. Aktualisieren drücken, um alle verfügbaren Modelle zu laden."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -179,12 +113,6 @@
     },
     "Valid API Key": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gültiger API-Schlüssel"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -195,12 +123,6 @@
     },
     "Validating...": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wird überprüft ..."
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",

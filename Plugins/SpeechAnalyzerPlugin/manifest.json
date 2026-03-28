@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "On-device speech recognition using Apple's Speech framework. Requires macOS 26+, streaming support.",
     "descriptions": {
-        "de": "Geraetebasierte Spracherkennung mit Apples Speech-Framework. Erfordert macOS 26+, Streaming-Unterstuetzung.",
         "zh-Hans": "使用 Apple Speech 框架的本地语音识别，支持流式，需 macOS 26+。"
     },
     "category": "transcription",

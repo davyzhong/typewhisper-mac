@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "LLM provider via Google Gemini API. Requires API key.",
     "descriptions": {
-        "de": "LLM-Anbieter ueber die Google Gemini API. Erfordert API-Key.",
         "zh-Hans": "通过 Google Gemini API 提供 LLM，需 API 密钥。"
     },
     "category": "llm",

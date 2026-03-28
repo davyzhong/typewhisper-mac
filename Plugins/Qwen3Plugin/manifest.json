@@ -7,7 +7,6 @@
     "author": "TypeWhisper",
     "description": "Local speech-to-text powered by MLX on Apple Silicon. 30 languages, no API key required.",
     "descriptions": {
-        "de": "Lokale Spracherkennung mit MLX auf Apple Silicon. 30 Sprachen, kein API-Key noetig.",
         "zh-Hans": "基于 MLX 的本地语音转文字，运行于 Apple Silicon，支持 30 种语言，无需 API。"
     },
     "category": "transcription",

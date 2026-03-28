@@ -9,7 +9,6 @@ struct GeneralSettingsView: View {
         }
         let preferred = Locale.preferredLanguages.first ?? "en"
         if preferred.hasPrefix("zh") { return "zh-Hans" }
-        if preferred.hasPrefix("de") { return "de" }
         return "en"
     }()
     @State private var showRestartAlert = false
@@ -59,7 +58,6 @@ struct GeneralSettingsView: View {
             Section(String(localized: "Language")) {
                 Picker(String(localized: "App Language"), selection: $appLanguage) {
                     Text("English").tag("en")
-                    Text("Deutsch").tag("de")
                     Text("简体中文").tag("zh-Hans")
                 }
                 .onChange(of: appLanguage) {
