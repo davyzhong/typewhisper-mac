@@ -1,20 +1,20 @@
-# TypeWhisper Plugin SDK
+# TypeWhisper 插件 SDK
 
-Build plugins for [TypeWhisper](https://github.com/TypeWhisper/typewhisper-mac) to add transcription engines, LLM providers, post-processors, and custom actions.
+为 [TypeWhisper](https://github.com/TypeWhisper/typewhisper-mac) 构建插件，添加转录引擎、LLM 提供商、后处理器和自定义动作。
 
-## Quick Start
+## 快速开始
 
-### 1. Create an Xcode Bundle Target
+### 1. 创建 Xcode Bundle Target
 
-In your Xcode project (or the TypeWhisper project itself):
+在您的 Xcode 项目（或 TypeWhisper 项目本身）中：
 
 1. **File > New > Target > macOS > Bundle**
-2. Set **Product Name** to your plugin name (e.g. `MyPlugin`)
-3. Add the `TypeWhisperPluginSDK` package as a dependency
+2. 将 **Product Name** 设置为您的插件名称（例如 `MyPlugin`）
+3. 添加 `TypeWhisperPluginSDK` 包作为依赖
 
-### 2. Add a Manifest
+### 2. 添加清单
 
-Create `Contents/Resources/manifest.json` in your bundle:
+在您的 bundle 中创建 `Contents/Resources/manifest.json`：
 
 ```json
 {
@@ -28,12 +28,12 @@ Create `Contents/Resources/manifest.json` in your bundle:
 }
 ```
 
-- `id` - Unique reverse-domain identifier
-- `principalClass` - Must match `@objc(ClassName)` on your plugin class
-- `minHostVersion` - Minimum TypeWhisper version required
-- `minOSVersion` - Minimum macOS version required (plugin is skipped on older systems)
+- `id` - 唯一的反向域名标识符
+- `principalClass` - 必须与插件类上的 `@objc(ClassName)` 匹配
+- `minHostVersion` - 所需的最低 TypeWhisper 版本
+- `minOSVersion` - 所需的最低 macOS 版本（插件在旧系统上会被跳过）
 
-### 3. Implement the Plugin
+### 3. 实现插件
 
 ```swift
 import Foundation
@@ -63,29 +63,29 @@ final class MyPlugin: NSObject, PostProcessorPlugin, @unchecked Sendable {
 
     @MainActor
     func process(text: String, context: PostProcessingContext) async throws -> String {
-        // Transform text here
+        // 在此处转换文本
         return text.uppercased()
     }
 }
 ```
 
-### 4. Install and Test
+### 4. 安装和测试
 
-Build your plugin, then install it using one of:
+构建插件后，使用以下方式之一安装：
 
-- **Install from File**: Settings > Integrations > Install from File... (select the `.bundle`)
-- **Manual**: Copy the `.bundle` to `~/Library/Application Support/TypeWhisper/Plugins/`
-- **Symlink** (development): `ln -s /path/to/DerivedData/.../MyPlugin.bundle ~/Library/Application\ Support/TypeWhisper/Plugins/`
+- **从文件安装**：设置 > 集成 > 从文件安装...（选择 `.bundle`）
+- **手动**：将 `.bundle` 复制到 `~/Library/Application Support/TypeWhisper/Plugins/`
+- **符号链接**（开发用）：`ln -s /path/to/DerivedData/.../MyPlugin.bundle ~/Library/Application\ Support/TypeWhisper/Plugins/`
 
-Enable your plugin in Settings > Integrations.
+在 设置 > 集成 中启用您的插件。
 
 ---
 
-## Plugin Types
+## 插件类型
 
 ### TranscriptionEnginePlugin
 
-Add a speech-to-text engine. Receives raw audio, returns text.
+添加语音转文字引擎。接收原始音频，返回文本。
 
 ```swift
 @objc(MyTranscriptionEngine)
@@ -115,8 +115,8 @@ final class MyTranscriptionEngine: NSObject, TranscriptionEnginePlugin, @uncheck
         translate: Bool,
         prompt: String?
     ) async throws -> PluginTranscriptionResult {
-        // audio.samples  - [Float] 16kHz mono PCM
-        // audio.wavData   - Pre-encoded WAV Data
+        // audio.samples  - [Float] 16kHz 单声道 PCM
+        // audio.wavData   - 预编码的 WAV 数据
         // audio.duration  - TimeInterval
         let text = "transcribed text"
         return PluginTranscriptionResult(text: text)
@@ -126,7 +126,7 @@ final class MyTranscriptionEngine: NSObject, TranscriptionEnginePlugin, @uncheck
 
 ### LLMProviderPlugin
 
-Add an LLM for prompt processing (text transformation, summarization, etc.).
+添加用于提示词处理（文本转换、摘要等）的 LLM。
 
 ```swift
 @objc(MyLLMProvider)
@@ -148,13 +148,13 @@ final class MyLLMProvider: NSObject, LLMProviderPlugin, @unchecked Sendable {
 
     func process(systemPrompt: String, userText: String, model: String?) async throws -> String {
         let apiKey = host?.loadSecret(key: "apiKey") ?? ""
-        // Call your LLM API here
+        // 在此处调用您的 LLM API
         return "processed result"
     }
 }
 ```
 
-For OpenAI-compatible APIs, use the built-in helper:
+对于 OpenAI 兼容 API，使用内置辅助工具：
 
 ```swift
 let helper = PluginOpenAIChatHelper(baseURL: "https://api.example.com")
@@ -166,25 +166,25 @@ let result = try await helper.process(
 
 ### PostProcessorPlugin
 
-Transform text after transcription. Runs in priority order (lower = earlier).
+在转录后转换文本。按优先级顺序运行（数字越小越早执行）。
 
 ```swift
 var processorName: String { "My Processor" }
-var priority: Int { 500 }  // Built-in: LLM=300, Snippets=500, Dictionary=600
+var priority: Int { 500 }  // 内置：LLM=300、Snippets=500、Dictionary=600
 
 @MainActor
 func process(text: String, context: PostProcessingContext) async throws -> String {
-    // context.appName           - Active app name
-    // context.bundleIdentifier  - Active app bundle ID
-    // context.url               - Browser URL (if available)
-    // context.language          - Detected language
+    // context.appName           - 当前应用名称
+    // context.bundleIdentifier  - 当前应用 Bundle ID
+    // context.url               - 浏览器 URL（如可用）
+    // context.language          - 检测到的语言
     return text
 }
 ```
 
 ### ActionPlugin
 
-Perform custom actions on text (e.g. create issues, send to APIs).
+对文本执行自定义动作（例如创建 Issue、发送到 API）。
 
 ```swift
 @objc(MyAction)
@@ -200,87 +200,87 @@ final class MyAction: NSObject, ActionPlugin, @unchecked Sendable {
 
     var actionName: String { "Do Something" }
     var actionId: String { "my-action" }
-    var actionIcon: String { "star.fill" }  // SF Symbol name
+    var actionIcon: String { "star.fill" }  // SF Symbol 名称
 
     func execute(input: String, context: ActionContext) async throws -> ActionResult {
-        // context.originalText - text before LLM processing
-        // input                - text after LLM processing
+        // context.originalText - LLM 处理前的文本
+        // input                - LLM 处理后的文本
         return ActionResult(
             success: true,
             message: "Done!",
-            url: "https://example.com",       // optional, makes result clickable
-            icon: "checkmark.circle.fill",     // optional SF Symbol
-            displayDuration: 3.0              // optional, seconds to show feedback
+            url: "https://example.com",       // 可选，使结果可点击
+            icon: "checkmark.circle.fill",     // 可选 SF Symbol
+            displayDuration: 3.0              // 可选，显示反馈的秒数
         )
     }
 }
 ```
 
-### Multi-Purpose Plugins
+### 多用途插件
 
-A single plugin class can conform to multiple protocols:
+单个插件类可以同时遵循多个协议：
 
 ```swift
 @objc(MyCloudPlugin)
 final class MyCloudPlugin: NSObject, TranscriptionEnginePlugin, LLMProviderPlugin, @unchecked Sendable {
-    // Implement both protocols in one plugin
+    // 在一个插件中实现两个协议
 }
 ```
 
 ---
 
-## Host Services
+## 主机服务
 
-Plugins receive a `HostServices` instance on activation:
+插件在激活时收到一个 `HostServices` 实例：
 
 ```swift
 func activate(host: HostServices) {
     self.host = host
 
-    // Secure storage (plugin-scoped keychain)
+    // 安全存储（插件作用域的 Keychain）
     try host.storeSecret(key: "apiKey", value: "sk-...")
     let key = host.loadSecret(key: "apiKey")
 
-    // Preferences (plugin-scoped UserDefaults)
+    // 偏好设置（插件作用域的 UserDefaults）
     host.setUserDefault("value", forKey: "myPref")
     let pref = host.userDefault(forKey: "myPref")
 
-    // File storage (~/Library/Application Support/TypeWhisper/PluginData/<pluginId>/)
+    // 文件存储（~/Library/Application Support/TypeWhisper/PluginData/<pluginId>/）
     let dataDir = host.pluginDataDirectory
 
-    // App context
+    // 应用上下文
     let appName = host.activeAppName
     let bundleId = host.activeAppBundleId
 
-    // Profile names
+    // Profile 名称
     let profiles = host.availableProfileNames
 }
 ```
 
 ---
 
-## Event Bus
+## 事件总线
 
-Subscribe to app events:
+订阅应用事件：
 
 ```swift
 func activate(host: HostServices) {
     host.eventBus.subscribe { event in
         switch event {
         case .transcriptionCompleted(let payload):
-            print("Transcribed: \(payload.finalText)")
-            print("Engine: \(payload.engineUsed)")
-            print("App: \(payload.appName ?? "unknown")")
+            print("转录完成：\(payload.finalText)")
+            print("引擎：\(payload.engineUsed)")
+            print("应用：\(payload.appName ?? "未知")")
         case .recordingStarted(let payload):
-            print("Recording started at \(payload.timestamp)")
+            print("录音开始于 \(payload.timestamp)")
         case .recordingStopped(let payload):
-            print("Duration: \(payload.durationSeconds)s")
+            print("时长：\(payload.durationSeconds)秒")
         case .textInserted(let payload):
-            print("Inserted: \(payload.text)")
+            print("已插入：\(payload.text)")
         case .actionCompleted(let payload):
-            print("Action \(payload.actionId): \(payload.message)")
+            print("动作 \(payload.actionId)：\(payload.message)")
         case .transcriptionFailed(let payload):
-            print("Error: \(payload.error)")
+            print("错误：\(payload.error)")
         }
     }
 }
@@ -288,9 +288,9 @@ func activate(host: HostServices) {
 
 ---
 
-## Settings UI
+## 设置界面
 
-Provide a SwiftUI view for plugin configuration:
+提供 SwiftUI 视图用于插件配置：
 
 ```swift
 var settingsView: AnyView? {
@@ -298,15 +298,15 @@ var settingsView: AnyView? {
 }
 ```
 
-The view appears as a sheet when the user clicks the gear icon in Settings > Integrations.
+用户点击 设置 > 集成 中的齿轮图标时，视图会以表单形式显示。
 
 ---
 
-## Built-in Helpers
+## 内置辅助工具
 
 ### PluginOpenAITranscriptionHelper
 
-For OpenAI-compatible Whisper APIs:
+用于 OpenAI 兼容的 Whisper API：
 
 ```swift
 let helper = PluginOpenAITranscriptionHelper(baseURL: "https://api.groq.com/openai")
@@ -318,7 +318,7 @@ let result = try await helper.transcribe(
 
 ### PluginOpenAIChatHelper
 
-For OpenAI-compatible chat APIs:
+用于 OpenAI 兼容的聊天 API：
 
 ```swift
 let helper = PluginOpenAIChatHelper(baseURL: "https://api.openai.com")
@@ -330,7 +330,7 @@ let result = try await helper.process(
 
 ### PluginWavEncoder
 
-Encode audio samples to WAV:
+将音频采样编码为 WAV：
 
 ```swift
 let wavData = PluginWavEncoder.encode(samples, sampleRate: 16000)
@@ -338,30 +338,30 @@ let wavData = PluginWavEncoder.encode(samples, sampleRate: 16000)
 
 ---
 
-## Manifest Reference
+## 清单参考
 
-| Field | Required | Description |
+| 字段 | 必需 | 描述 |
 |-------|----------|-------------|
-| `id` | Yes | Unique reverse-domain ID (e.g. `com.yourname.myplugin`) |
-| `name` | Yes | Display name |
-| `version` | Yes | Semver string (e.g. `1.0.0`) |
-| `minHostVersion` | No | Minimum TypeWhisper version |
-| `minOSVersion` | No | Minimum macOS version (e.g. `15.0`, `26.0`). Plugin is skipped on older systems. |
-| `author` | No | Author name |
-| `principalClass` | Yes | Objective-C class name, must match `@objc(Name)` |
+| `id` | 是 | 唯一反向域名 ID（例如 `com.yourname.myplugin`）|
+| `name` | 是 | 显示名称 |
+| `version` | 是 | 语义化版本字符串（例如 `1.0.0`）|
+| `minHostVersion` | 否 | 最低 TypeWhisper 版本 |
+| `minOSVersion` | 否 | 最低 macOS 版本（例如 `15.0`、`26.0`）。插件在旧系统上会被跳过。|
+| `author` | 否 | 作者名称 |
+| `principalClass` | 是 | Objective-C 类名，必须与 `@objc(Name)` 匹配 |
 
 ---
 
-## Publishing
+## 发布
 
-To distribute via the TypeWhisper plugin marketplace:
+要通过 TypeWhisper 插件市场分发：
 
-1. Build your plugin in Release configuration
-2. ZIP the `.bundle`: `ditto -ck --sequesterRsrc MyPlugin.bundle MyPlugin.zip`
-3. Host the ZIP (GitHub Releases, your own server, etc.)
-4. Submit a PR to add your plugin to the [plugin registry](https://github.com/TypeWhisper/typewhisper-mac/blob/gh-pages/plugins.json)
+1. 以 Release 配置构建插件
+2. 将 `.bundle` 压缩为 ZIP：`ditto -ck --sequesterRsrc MyPlugin.bundle MyPlugin.zip`
+3. 托管 ZIP 文件（GitHub Releases、自有服务器等）
+4. 提交 PR 将插件添加到 [插件注册表](https://github.com/TypeWhisper/typewhisper-mac/blob/gh-pages/plugins.json)
 
-Registry entry format:
+注册表条目格式：
 
 ```json
 {
@@ -381,7 +381,7 @@ Registry entry format:
 
 ---
 
-## Requirements
+## 要求
 
 - macOS 15.0+
 - Swift 6.0

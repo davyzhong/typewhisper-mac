@@ -1,86 +1,134 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "Download & Load" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laden & Aktivieren"
+  "sourceLanguage": "en",
+  "strings": {
+    "Download & Load": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laden & Aktivieren"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下载并加载"
           }
         }
       }
     },
-    "Loading model..." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modell wird geladen ..."
+    "Loading model...": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modell wird geladen ..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载模型..."
           }
         }
       }
     },
-    "Loading..." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laden ..."
+    "Loading...": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laden ..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加载中..."
           }
         }
       }
     },
-    "Local speech-to-text using OpenAI Whisper via CoreML. 99+ languages, streaming, translation to English." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lokale Sprache-zu-Text-Erkennung mit OpenAI Whisper via CoreML. 99+ Sprachen, Streaming, Übersetzung ins Englische."
+    "Local speech-to-text using OpenAI Whisper via CoreML. 99+ languages, streaming, translation to English.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lokale Sprache-zu-Text-Erkennung mit OpenAI Whisper via CoreML. 99+ Sprachen, Streaming, Übersetzung ins Englische."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通过 CoreML 使用 OpenAI Whisper 进行本地语音转文本。支持 99+ 种语言、流式处理和翻译为英文。"
           }
         }
       }
     },
-    "Models" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modelle"
+    "Models": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelle"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型"
           }
         }
       }
     },
-    "Optimizing for Neural Engine..." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Optimierung für Neural Engine ..."
+    "Optimizing for Neural Engine...": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optimierung für Neural Engine ..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在针对神经网络引擎进行优化..."
           }
         }
       }
     },
-    "Recommended" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empfohlen"
+    "Recommended": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empfohlen"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推荐"
           }
         }
       }
     },
-    "Unload" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deaktivieren"
+    "Unload": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktivieren"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卸载"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

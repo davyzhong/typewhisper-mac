@@ -7,7 +7,8 @@
     "author": "TypeWhisper",
     "description": "Connect to any OpenAI-compatible API server for transcription and LLM. Works with Ollama, LM Studio, vLLM, and more.",
     "descriptions": {
-        "de": "Verbindung zu jedem OpenAI-kompatiblen API-Server fuer Transkription und LLM. Funktioniert mit Ollama, LM Studio, vLLM und mehr."
+        "de": "Verbindung zu jedem OpenAI-kompatiblen API-Server fuer Transkription und LLM. Funktioniert mit Ollama, LM Studio, vLLM und mehr.",
+        "zh-Hans": "连接任意 OpenAI 兼容 API 服务器进行转录和 LLM，支持本地模型如 Ollama。"
     },
     "category": "transcription",
     "iconSystemName": "server.rack",

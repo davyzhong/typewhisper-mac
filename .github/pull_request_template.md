@@ -1,9 +1,9 @@
-## Summary
+## 概要
 
-<!-- What does this PR do? -->
+<!-- 本 PR 做了什么？-->
 
-## Test Plan
+## 测试计划
 
-- [ ] Built and ran locally
-- [ ] Tested the changed functionality manually
-- [ ] No regressions in existing features
+- [ ] 本地构建并运行
+- [ ] 手动测试更改的功能
+- [ ] 现有功能无回归

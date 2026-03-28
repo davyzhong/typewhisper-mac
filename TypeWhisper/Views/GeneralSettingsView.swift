@@ -7,7 +7,10 @@ struct GeneralSettingsView: View {
         if let lang = UserDefaults.standard.string(forKey: UserDefaultsKeys.preferredAppLanguage) {
             return lang
         }
-        return Locale.preferredLanguages.first?.hasPrefix("de") == true ? "de" : "en"
+        let preferred = Locale.preferredLanguages.first ?? "en"
+        if preferred.hasPrefix("zh") { return "zh-Hans" }
+        if preferred.hasPrefix("de") { return "de" }
+        return "en"
     }()
     @State private var showRestartAlert = false
     @State private var showMenuBarIconHiddenAlert = false
@@ -57,6 +60,7 @@ struct GeneralSettingsView: View {
                 Picker(String(localized: "App Language"), selection: $appLanguage) {
                     Text("English").tag("en")
                     Text("Deutsch").tag("de")
+                    Text("简体中文").tag("zh-Hans")
                 }
                 .onChange(of: appLanguage) {
                     UserDefaults.standard.set(appLanguage, forKey: UserDefaultsKeys.preferredAppLanguage)

@@ -1,55 +1,55 @@
-# Contributing to TypeWhisper
+# 为 TypeWhisper 贡献代码
 
-Thanks for your interest in contributing!
+感谢您对贡献代码的兴趣！
 
-## Getting Started
+## 入门
 
-1. Fork the repository and clone it
-2. Open `TypeWhisper.xcodeproj` in Xcode 16+
-3. SPM dependencies resolve automatically on first build
-4. Build and run (Cmd+R) - the app appears as a menu bar icon
+1. Fork 仓库并克隆到本地
+2. 在 Xcode 16+ 中打开 `TypeWhisper.xcodeproj`
+3. 首次构建时 SPM 依赖自动解析
+4. 构建并运行（Cmd+R）——应用以菜单栏图标形式显示
 
-## Code Signing (Optional)
+## 代码签名（可选）
 
-The project builds without any signing setup using ad-hoc signing.
+项目使用临时签名构建，无需任何签名配置。
 
-To use your own signing identity:
+使用您自己的签名身份：
 ```
 echo 'DEVELOPMENT_TEAM = YOUR_TEAM_ID' > CodeSigning.local.xcconfig
 ```
 
-## Development Setup
+## 开发环境
 
-- **macOS 15.0+** required
-- **Swift 6** with strict concurrency
-- Debug builds use a separate data directory (`TypeWhisper-Dev`) and keychain prefix, so they don't interfere with release builds
+- 要求 macOS 15.0+
+- Swift 6 严格并发模式
+- Debug 构建使用独立的数据目录（`TypeWhisper-Dev`）和 Keychain 前缀，不会干扰 Release 构建
 
-## Pull Requests
+## Pull Request
 
-1. Create a feature branch from `main`
-2. Keep changes focused - one feature or fix per PR
-3. Test your changes manually and run the automated checks
-4. Fill out the PR template (Summary + Test Plan)
-5. PRs are squash-merged into `main`
+1. 从 `main` 分支创建功能分支
+2. 保持更改专注——每个 PR 一个功能或修复
+3. 手动测试更改并运行自动化检查
+4. 填写 PR 模板（Summary + Test Plan）
+5. PR 以 squash 合并方式合入 `main`
 
-Recommended checks:
+推荐检查项：
 
 ```bash
 xcodebuild test -project TypeWhisper.xcodeproj -scheme TypeWhisper -destination 'platform=macOS,arch=arm64' -parallel-testing-enabled NO CODE_SIGN_IDENTITY='-' CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 swift test --package-path TypeWhisperPluginSDK
 ```
 
-## Code Style
+## 代码风格
 
-- Follow existing patterns in the codebase
-- MVVM architecture with `ServiceContainer` for dependency injection
-- Localization: use `String(localized:)` for all user-facing strings
-- SwiftData for persistence, Combine for reactive updates
+- 遵循代码库中现有的模式
+- MVVM 架构，使用 `ServiceContainer` 进行依赖注入
+- 本地化：所有面向用户的字符串使用 `String(localized:)`
+- 使用 SwiftData 进行持久化，使用 Combine 进行响应式更新
 
-## Reporting Issues
+## 报告问题
 
-Use the [issue templates](https://github.com/TypeWhisper/typewhisper-mac/issues/new/choose) for bug reports and feature requests.
+使用 [issue 模板](https://github.com/TypeWhisper/typewhisper-mac/issues/new/choose) 报告 bug 和功能请求。
 
-## License
+## 许可证
 
-By contributing, you agree that your contributions will be licensed under GPLv3.
+贡献代码即表示您同意您的贡献将按 GPLv3 许可。

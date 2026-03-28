@@ -1,216 +1,342 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "Add metadata (date, app, language, tags) to each note." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Metadaten (Datum, App, Sprache, Tags) zu jeder Notiz hinzufügen."
+  "sourceLanguage": "en",
+  "strings": {
+    "Add metadata (date, app, language, tags) to each note.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metadaten (Datum, App, Sprache, Tags) zu jeder Notiz hinzufügen."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为每条笔记添加元数据（日期、应用、语言、标签）。"
           }
         }
       }
     },
-    "Append all transcriptions to a single daily file instead of creating individual notes." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle Transkriptionen an eine einzelne Tagesdatei anhängen, statt einzelne Notizen zu erstellen."
+    "Append all transcriptions to a single daily file instead of creating individual notes.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Transkriptionen an eine einzelne Tagesdatei anhängen, statt einzelne Notizen zu erstellen."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将所有转录内容追加到单个日记文件中，而不是创建独立的笔记。"
           }
         }
       }
     },
-    "Auto-Export" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-Export"
+    "Auto-Export": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-Export"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动导出"
           }
         }
       }
     },
-    "Automatically save every transcription to Obsidian." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jede Transkription automatisch in Obsidian speichern."
+    "Automatically save every transcription to Obsidian.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jede Transkription automatisch in Obsidian speichern."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动将每条转录保存到 Obsidian。"
           }
         }
       }
     },
-    "Browse..." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Durchsuchen ..."
+    "Browse...": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durchsuchen ..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "浏览..."
           }
         }
       }
     },
-    "Copy Prompt" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prompt kopieren"
+    "Copy Prompt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompt kopieren"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制提示词"
           }
         }
       }
     },
-    "Create a new PromptAction with this system prompt and set \"Save to Obsidian\" as the action target:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erstelle eine neue PromptAction mit diesem Prompt und setze \"Save to Obsidian\" als Aktionsziel:"
+    "Create a new PromptAction with this system prompt and set \"Save to Obsidian\" as the action target:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erstelle eine neue PromptAction mit diesem Prompt und setze \"Save to Obsidian\" als Aktionsziel:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用此系统提示词创建一个新的 PromptAction，并将操作目标设为\"保存到 Obsidian\"："
           }
         }
       }
     },
-    "Daily Note Mode" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tagesnotiz-Modus"
+    "Daily Note Mode": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tagesnotiz-Modus"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日记模式"
           }
         }
       }
     },
-    "Detected Vaults" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erkannte Vaults"
+    "Detected Vaults": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erkannte Vaults"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检测到的仓库"
           }
         }
       }
     },
-    "File Organization" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dateiorganisation"
+    "File Organization": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateiorganisation"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件组织"
           }
         }
       }
     },
-    "Filename:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dateiname:"
+    "Filename:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateiname:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件名："
           }
         }
       }
     },
-    "No vault selected" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kein Vault ausgewählt"
+    "No vault selected": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Vault ausgewählt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未选择仓库"
           }
         }
       }
     },
-    "Placeholders: {{DATE}}, {{TIME}}, {{APP}}, {{LANG}}" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Platzhalter: {{DATE}}, {{TIME}}, {{APP}}, {{LANG}}"
+    "Placeholders: {{DATE}}, {{TIME}}, {{APP}}, {{LANG}}": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platzhalter: {{DATE}}, {{TIME}}, {{APP}}, {{LANG}}"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "占位符：{{DATE}}、{{TIME}}、{{APP}}、{{LANG}}"
           }
         }
       }
     },
-    "Preview: %@.md" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorschau: %@.md"
+    "Preview: %@.md": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorschau: %@.md"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "预览：%@.md"
           }
         }
       }
     },
-    "Recommended Prompt" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empfohlener Prompt"
+    "Recommended Prompt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empfohlener Prompt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推荐提示词"
           }
         }
       }
     },
-    "Select vault..." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vault auswählen ..."
+    "Select vault...": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vault auswählen ..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择仓库..."
           }
         }
       }
     },
-    "Select your Obsidian vault folder" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle deinen Obsidian-Vault-Ordner"
+    "Select your Obsidian vault folder": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle deinen Obsidian-Vault-Ordner"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择你的 Obsidian 仓库文件夹"
           }
         }
       }
     },
-    "Subfolder:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unterordner:"
+    "Subfolder:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterordner:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "子文件夹："
           }
         }
       }
     },
-    "Tags:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tags:"
+    "Tags:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tags:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标签："
           }
         }
       }
     },
-    "Vault" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vault"
+    "Vault": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vault"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仓库"
           }
         }
       }
     },
-    "YAML Frontmatter" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "YAML-Frontmatter"
+    "YAML Frontmatter": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YAML-Frontmatter"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YAML 前置元数据"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

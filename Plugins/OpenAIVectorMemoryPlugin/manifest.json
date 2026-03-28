@@ -7,7 +7,8 @@
     "author": "TypeWhisper",
     "description": "Store and search memories using the OpenAI Vector Store API with semantic embeddings.",
     "descriptions": {
-        "de": "Speichert und durchsucht Erinnerungen ueber die OpenAI Vector Store API mit semantischen Embeddings."
+        "de": "Speichert und durchsucht Erinnerungen ueber die OpenAI Vector Store API mit semantischen Embeddings.",
+        "zh-Hans": "通过 OpenAI Vector Store API 存储和搜索记忆，使用语义嵌入，完全离线。"
     },
     "category": "memory",
     "iconSystemName": "brain",

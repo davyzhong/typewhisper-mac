@@ -1,86 +1,134 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "Auto-open on recording" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatisch bei Aufnahme öffnen"
+  "sourceLanguage": "en",
+  "strings": {
+    "Auto-open on recording": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch bei Aufnahme öffnen"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音时自动打开"
           }
         }
       }
     },
-    "New text" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neuer Text"
+    "New text": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neuer Text"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新文本"
           }
         }
       }
     },
-    "Font size" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schriftgrösse"
+    "Font size": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schriftgrösse"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字体大小"
           }
         }
       }
     },
-    "Press a key combination..." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tastenkombination drücken..."
+    "Press a key combination...": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tastenkombination drücken..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按下快捷键组合..."
           }
         }
       }
     },
-    "Record Shortcut" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aufnehmen"
+    "Record Shortcut": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufnehmen"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录制快捷键"
           }
         }
       }
     },
-    "Show or hide the transcript window with a keyboard shortcut." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transkript-Fenster mit einem Tastenkürzel ein- oder ausblenden."
+    "Show or hide the transcript window with a keyboard shortcut.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transkript-Fenster mit einem Tastenkürzel ein- oder ausblenden."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用键盘快捷键显示或隐藏转录窗口。"
           }
         }
       }
     },
-    "Show the transcript window automatically when recording starts." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transkript-Fenster automatisch bei Aufnahmestart anzeigen."
+    "Show the transcript window automatically when recording starts.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transkript-Fenster automatisch bei Aufnahmestart anzeigen."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录音开始时自动显示转录窗口。"
           }
         }
       }
     },
-    "Toggle Shortcut" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tastenkürzel"
+    "Toggle Shortcut": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tastenkürzel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切换快捷键"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

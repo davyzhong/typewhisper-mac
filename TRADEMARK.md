@@ -1,24 +1,24 @@
-# Trademark Policy
+# 商标政策
 
-"TypeWhisper", the TypeWhisper name, and associated logos/app icons are trademarks of the TypeWhisper project owner.
+"TypeWhisper"、TypeWhisper 名称及相关标识/应用图标均为 TypeWhisper 项目所有者的商标。
 
-This repository's source code is licensed under GPLv3, but trademark rights are not granted under the open-source license.
+本仓库的源代码按 GPLv3 授权，但开源许可证不授予商标权。
 
-## Allowed
+## 允许的行为
 
-- Truthful references such as "based on TypeWhisper" or "fork of TypeWhisper".
-- Nominative use to describe compatibility or origin.
+- 如实引用，例如"基于 TypeWhisper"或"TypeWhisper 的分支"。
+- 说明兼容性或来源的名义使用。
 
-## Not Allowed Without Prior Written Permission
+## 未经事先书面许可，不允许的行为
 
-- Using "TypeWhisper" as the name of a fork, distribution, product, or company.
-- Using the TypeWhisper logo or app icon in a way that suggests endorsement or official status.
-- Any branding that is confusingly similar to TypeWhisper.
+- 使用"TypeWhisper"作为分支、分发、产品或公司的名称。
+- 以暗示背书或官方身份的方式使用 TypeWhisper 标识或应用图标。
+- 任何与 TypeWhisper 令人混淆地相似的 branding。
 
-## Forks and Redistributions
+## 分支和再分发
 
-You may fork and modify the code under GPLv3 terms, but you must rename your fork and remove TypeWhisper trademarks (name, logo, app icon) unless you have explicit written permission.
+您可以按照 GPLv3 条款对代码进行分支和修改，但必须重命名您的分支并移除 TypeWhisper 商标（名称、标识、应用图标），除非您获得了明确的书面许可。
 
-Trademark inquiries:
+商标相关咨询：
 
-- Email: licensing@typewhisper.com
+- 电子邮件：licensing@typewhisper.com

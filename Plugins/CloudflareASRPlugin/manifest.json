@@ -8,5 +8,8 @@
     "description": "OpenAI-compatible transcription through a Cloudflare tunnel with service token authentication. Credentials stored in macOS Keychain.",
     "category": "transcription",
     "iconSystemName": "shield.lefthalf.filled",
-    "principalClass": "CloudflareASRPlugin"
+    "principalClass": "CloudflareASRPlugin",
+    "descriptions": {
+        "zh-Hans": "通过 Cloudflare 隧道以 OpenAI 兼容方式转录，支持服务令牌认证。"
+    }
 }
